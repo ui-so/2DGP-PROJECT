@@ -14,18 +14,18 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             running = False
         else:
-            boy.handle_event(event) # SPACE 들어오면, 소년에게 전달aaa
+            player.handle_event(event) # SPACE 들어오면, 소년에게 전달aaa
 
 
 
 def reset_world():
     global world
-    global boy
+    global player
 
     world = []
 
     player = Player()
-    world.append(boy)
+    world.append(player)
 
 
 
