@@ -126,16 +126,18 @@ class Attack:
         self.player = player
 
     def enter(self, e):
-        pass
+        self.player.wait_start_time = get_time()
 
     def exit(self, e):
         pass
 
     def do(self):
-        pass
+        if get_time() - self.player.wait_start_time > 2.0:
+            # IDLE 2초 경과, state machine에게 TIME_OUT 이벤트 전달
+            self.player.state_machine.handle_state_event(('TIME_OUT', None))
 
     def draw(self):
-        pass
+        self.player.image.clip_draw(0, 0, 32, 32, self.player.x+16, self.player.y, 10, 10)
 
 
 class Player:
@@ -159,13 +161,17 @@ class Player:
                 self.IDLE: {time_out: self.SLEEP, right_down: self.RUN, left_down: self.RUN,
                             right_up: self.RUN, left_up: self.RUN,
                             up_up: self.RUN, up_down: self.RUN,
-                            down_up: self.RUN, down_down: self.RUN
-                            },
+                            down_up: self.RUN, down_down: self.RUN,
+                            mouse_left_down: self.ATTACK},
                 self.RUN: {right_up: self.IDLE, left_up: self.IDLE,
                            right_down: self.IDLE, left_down: self.IDLE,
                            up_up:self.IDLE, up_down:self.IDLE,
-                           down_up:self.IDLE, down_down:self.IDLE},
-                self.ATTACK:{mouse_left_down: self.IDLE}
+                           down_up:self.IDLE, down_down:self.IDLE,
+                           mouse_left_down:self.ATTACK},
+                self.ATTACK:{right_down: self.RUN, left_down: self.RUN,
+                            right_up: self.RUN, left_up: self.RUN,
+                            up_up: self.RUN, up_down: self.RUN,
+                            down_up: self.RUN, down_down: self.RUN,}
             }
         )
 
