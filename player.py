@@ -1,5 +1,5 @@
 from pico2d import load_image, get_time
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_a
+from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_UP, SDLK_DOWN
 
 from state_machine import StateMachine
 
@@ -28,9 +28,18 @@ def right_up(e):
 def left_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 
+def up_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_UP
 
-def auto_run(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_a
+def up_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_UP
+
+def down_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_DOWN
+
+def down_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_DOWN
+
 
 
 class Run:
@@ -39,16 +48,21 @@ class Run:
 
     def enter(self, e):
         if right_down(e) or left_up(e):
-            self.player.dir = self.player.face_dir = 1
+            self.player.dir_x = self.player.face_dir = 1
         elif left_down(e) or right_up(e):
-            self.player.dir = self.player.face_dir = -1
+            self.player.dir_x = self.player.face_dir = -1
+        if up_down(e) or down_up(e):
+            self.player.dir_y = 1
+        elif up_up(e) or down_down(e):
+            self.player.dir_y = -1
 
     def exit(self, e):
         pass
 
     def do(self):
         self.player.frame = (self.player.frame + 1) % 6
-        self.player.x += self.player.dir * 5
+        self.player.x += self.player.dir_x * 5
+        self.player.y += self.player.dir_y * 5
 
     def draw(self):
         if self.player.face_dir == 1:  # right
@@ -62,7 +76,8 @@ class Idle:
         self.player = player
 
     def enter(self, e):
-        self.player.dir = 0
+        self.player.dir_x = 0
+        self.player.dir_y = 0
         self.player.wait_start_time = get_time()
 
     def exit(self, e):
@@ -86,7 +101,8 @@ class Sleep:
         self.player = player
 
     def enter(self, e):
-        self.player.dir = 0
+        self.player.dir_x = 0
+        self.player.dir_y = 0
 
     def exit(self, e):
         pass
@@ -108,7 +124,8 @@ class Player:
         self.x, self.y = 400, 90
         self.frame = 0
         self.face_dir = 1
-        self.dir = 0
+        self.dir_x = 0
+        self.dir_y = 0
         self.image = load_image('Pink_Monster_Run_6.png')
 
         self.RUN = Run(self)
@@ -120,10 +137,14 @@ class Player:
             {
                 self.SLEEP: {space_down: self.IDLE},
                 self.IDLE: {time_out: self.SLEEP, right_down: self.RUN, left_down: self.RUN,
-                            right_up: self.RUN, left_up: self.RUN
+                            right_up: self.RUN, left_up: self.RUN,
+                            up_up: self.RUN, up_down: self.RUN,
+                            down_up: self.RUN, down_down: self.RUN
                             },
                 self.RUN: {right_up: self.IDLE, left_up: self.IDLE,
-                           right_down: self.IDLE, left_down: self.IDLE}
+                           right_down: self.IDLE, left_down: self.IDLE,
+                           up_up:self.IDLE, up_down:self.IDLE,
+                           down_up:self.IDLE, down_down:self.IDLE}
             }
         )
 
