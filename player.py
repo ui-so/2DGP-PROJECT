@@ -1,5 +1,5 @@
 from pico2d import load_image, get_time
-from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_UP, SDLK_DOWN
+from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_UP, SDLK_DOWN,SDL_MOUSEBUTTONDOWN
 
 from state_machine import StateMachine
 
@@ -40,6 +40,8 @@ def down_down(e):
 def down_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_DOWN
 
+def mouse_left_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN and e[1].button == 1
 
 
 class Run:
@@ -119,6 +121,23 @@ class Sleep:
                                                self.player.y - 25, 100, 100)
 
 
+class Attack:
+    def __init__(self, player):
+        self.player = player
+
+    def enter(self, e):
+        pass
+
+    def exit(self, e):
+        pass
+
+    def do(self):
+        pass
+
+    def draw(self):
+        pass
+
+
 class Player:
     def __init__(self):
         self.x, self.y = 400, 90
@@ -131,6 +150,7 @@ class Player:
         self.RUN = Run(self)
         self.IDLE = Idle(self)
         self.SLEEP = Sleep(self)  # 새로운 SLEEP 상태 생성
+        self.ATTACK = Attack(self)
 
         self.state_machine = StateMachine(
             self.IDLE,
@@ -144,7 +164,8 @@ class Player:
                 self.RUN: {right_up: self.IDLE, left_up: self.IDLE,
                            right_down: self.IDLE, left_down: self.IDLE,
                            up_up:self.IDLE, up_down:self.IDLE,
-                           down_up:self.IDLE, down_down:self.IDLE}
+                           down_up:self.IDLE, down_down:self.IDLE},
+                self.ATTACK:{mouse_left_down: self.IDLE}
             }
         )
 
