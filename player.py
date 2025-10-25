@@ -132,12 +132,17 @@ class Attack:
         pass
 
     def do(self):
-        if get_time() - self.player.wait_start_time > 2.0:
+        if get_time() - self.player.wait_start_time > 1.0:
             # IDLE 2초 경과, state machine에게 TIME_OUT 이벤트 전달
             self.player.state_machine.handle_state_event(('TIME_OUT', None))
 
     def draw(self):
-        self.player.image.clip_draw(0, 0, 32, 32, self.player.x+16, self.player.y, 10, 10)
+        if self.player.face_dir == 1:  # right
+            self.player.image.clip_draw(self.player.frame * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
+        else:  # face_dir == -1: # left
+            self.player.image.clip_composite_draw(self.player.frame * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
+
+        self.player.image.clip_draw(0, 0, 32, 32, self.player.x+32, self.player.y, 30, 30)
 
 
 class Player:
@@ -171,7 +176,7 @@ class Player:
                 self.ATTACK:{right_down: self.RUN, left_down: self.RUN,
                             right_up: self.RUN, left_up: self.RUN,
                             up_up: self.RUN, up_down: self.RUN,
-                            down_up: self.RUN, down_down: self.RUN,}
+                            down_up: self.RUN, down_down: self.RUN,time_out:self.IDLE}
             }
         )
 
