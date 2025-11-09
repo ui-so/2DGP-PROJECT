@@ -29,5 +29,5 @@ class Attack:
             return
 
     def get_bb(self):
-        return self.x - 10, self.y - 10, self.x + 10, self.y + 10
+        return self.x - self.size//2, self.y - self.size//2, self.x + self.size//2, self.y + self.size//2
 

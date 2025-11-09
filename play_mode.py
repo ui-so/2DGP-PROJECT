@@ -25,12 +25,17 @@ def init():
     player = Player()
     game_world.add_object(player, 1)
 
-    slime = SLIME()
-    game_world.add_object(slime, 1)
+    slimes = [SLIME() for _ in range(3)]
+    game_world.add_objects(slimes, 1)
+
+    game_world.add_collision_pair('player:slime', player, None)
+    for slime in slimes:
+        game_world.add_collision_pair('player:slime', None, slime)
 
 
 def update():
     game_world.update()
+    game_world.handle_collisions()
 
 
 def draw():

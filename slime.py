@@ -36,7 +36,7 @@ class SLIME:
         self.change_timer = random.uniform(1.0, 3.0)
 
     def get_bb(self):
-        return self.x - self.size // 2, self.y - self.size // 2, self.x + self.size // 2, self.y + self.size // 2
+        return self.x - 30, self.y - 50, self.x + 30, self.y
 
     def update(self):
         self.change_timer -= game_framework.frame_time
@@ -76,4 +76,6 @@ class SLIME:
         pass
 
     def handle_collision(self, group, other):
+        if group == 'player:slime':
+            print('Slime Collide Player')
         pass
