@@ -3,10 +3,12 @@ from pico2d import *
 
 from player import Player
 from slime import SLIME
+from P_slime import P_SLIME
 import game_world
 
 player = None
-slime = None
+slimes = None
+P_slimes = None
 
 def handle_events():
     event_list = get_events()
@@ -20,13 +22,16 @@ def handle_events():
 
 
 def init():
-    global player, slime
+    global player, slimes, P_slimes
 
     player = Player()
     game_world.add_object(player, 1)
 
     slimes = [SLIME() for _ in range(3)]
     game_world.add_objects(slimes, 1)
+
+    P_slimes = [P_SLIME() for _ in range(3)]
+    game_world.add_objects(P_slimes, 1)
 
     game_world.add_collision_pair('player:slime', player, None)
     for slime in slimes:
