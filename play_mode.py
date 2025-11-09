@@ -2,9 +2,11 @@ import game_framework
 from pico2d import *
 
 from player import Player
+from slime import SLIME
 import game_world
 
 player = None
+slime = None
 
 def handle_events():
     event_list = get_events()
@@ -18,10 +20,13 @@ def handle_events():
 
 
 def init():
-    global player
+    global player, slime
 
     player = Player()
     game_world.add_object(player, 1)
+
+    slime = SLIME()
+    game_world.add_object(slime, 1)
 
 
 def update():
