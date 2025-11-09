@@ -1,74 +1,79 @@
-from pico2d import load_image, get_time
+import random
+import game_framework
 
-from state_machine import StateMachine
+from pico2d import *
 
-class MOVE:
-    def __init__(self, player):
-        self.player = player
+# Slime Run Speed
+PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
+RUN_SPEED_KMPH = 5.0  # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-    def enter(self, e):
-        pass
-
-    def exit(self, e):
-        pass
-
-    def do(self):
-        self.player.frame = (self.player.frame + 1) % 6
-        self.player.x += self.player.dir_x * 5
-        self.player.y += self.player.dir_y * 5
-
-    def draw(self):
-        if self.player.face_dir == 1:  # right
-            self.player.image.clip_draw(self.player.frame * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
-        else:  # face_dir == -1: # left
-            self.player.image.clip_composite_draw(self.player.frame * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
-
-
-class Attack:
-    def __init__(self, player):
-        self.player = player
-
-    def enter(self, e):
-        self.player.wait_start_time = get_time()
-
-    def exit(self, e):
-        pass
-
-    def do(self):
-        if get_time() - self.player.wait_start_time > 1.0:
-            # IDLE 2초 경과, state machine에게 TIME_OUT 이벤트 전달
-            self.player.state_machine.handle_state_event(('TIME_OUT', None))
-
-    def draw(self):
-        if self.player.face_dir == 1:  # right
-            self.player.image.clip_draw(self.player.frame * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
-        else:  # face_dir == -1: # left
-            self.player.image.clip_composite_draw(self.player.frame * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
-
-        self.player.image.clip_draw(0, 0, 32, 32, self.player.x+32, self.player.y, 30, 30)
-
+# Slime Action Speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 7.0
 
 class SLIME:
+    image = None
+
+    def load_images(self):
+        if SLIME.image is None:
+            SLIME.image = load_image('Slime_Run.png')
+
     def __init__(self):
-        self.x, self.y = 400, 90
-        self.frame = 0
-        self.face_dir = 1
-        self.dir_x = 0
-        self.dir_y = 0
-        self.image = load_image('Pink_Monster_Run_6.png')
+        self.load_images()
+        self.frame = random.randint(0, int(FRAMES_PER_ACTION) - 1)
+        self.dir_x = random.choice([-1, 1])
+        self.dir_y = random.choice([-1, 1])
+        self.size = 200
+        self.draw_w = 100
+        self.draw_h = 100
+        self.x = random.randint(self.size // 2, 800 - self.size // 2)
+        self.y = random.randint(self.size // 2, 600 - self.size // 2)
 
-        self.MOVE = MOVE(self)
-        self.ATTACK = Attack(self)
+        self.change_timer = random.uniform(1.0, 3.0)
 
-
+    def get_bb(self):
+        return self.x - self.size // 2, self.y - self.size // 2, self.x + self.size // 2, self.y + self.size // 2
 
     def update(self):
-        self.state_machine.update()
+        self.change_timer -= game_framework.frame_time
+
+        if self.change_timer < 0:
+            self.dir_x = random.choice([-1, 1])
+            self.dir_y = random.choice([-1, 1])
+            self.change_timer = random.uniform(1.0, 3.0)
+
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
+        self.x += RUN_SPEED_PPS * self.dir_x * game_framework.frame_time
+        self.y += RUN_SPEED_PPS * self.dir_y * game_framework.frame_time
+
+        half_w = self.draw_w // 2
+        half_h = self.draw_h // 2
+
+        if self.x < half_w or self.x > 800 - half_w:
+            self.x = clamp(half_w, self.x, 800 - half_w)
+            self.dir_x *= -1
+
+        if self.y < half_h or self.y > 600 - half_h:
+            self.y = clamp(half_h, self.y, 600 - half_h)
+            self.dir_y *= -1
+
 
     def draw(self):
-        self.state_machine.draw()
+        if SLIME.image is None:
+            return
+        sx = int(self.frame) * 128
+        if self.dir_x < 0:
+            SLIME.image.clip_composite_draw(sx, 0, 128, 128, 0, 'h', self.x, self.y, self.draw_w, self.draw_h)
+        else:
+            SLIME.image.clip_draw(sx, 0, 128, 128, self.x, self.y, self.draw_w, self.draw_h)
+        draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):
-        # 들어온 외부 키입력 등을 상태 머신에게 전달하기 위해서 튜플화 시킨 후, 전달
-        self.state_machine.handle_state_event(('INPUT', event))
+        pass
+
+    def handle_collision(self, group, other):
         pass
