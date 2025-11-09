@@ -7,6 +7,7 @@ import game_world
 import game_framework
 
 from attack import Attack
+from catch import Catch
 
 # Player Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -28,6 +29,8 @@ down_pressed = False
 
 collision_flag = True
 collision_time = 0.0
+
+inventory = []
 
 # 이벤트 검사 함수들
 def space_down(e):
@@ -104,6 +107,9 @@ def down_up(e):
 
 def mouse_left_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN and e[1].button == 1
+
+def mouse_right_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_MOUSEBUTTONDOWN and e[1].button == 3
 
 
 # 모든 키가 해제되었는지 검사하는 이벤트 (IDLE 전이용)
@@ -277,7 +283,15 @@ class Player:
         # 마우스 왼쪽 클릭은 상태 전이와 무관하게 즉시 공격 생성
         if mouse_left_down(e):
             self.attack_()
+        elif mouse_right_down(e):
+            self.catch_()
         self.state_machine.handle_state_event(('INPUT', event))
+        pass
+
+    def catch_(self):
+        catch = Catch(self.x+50, self.y, self.face_dir)
+        game_world.add_object(catch, 1)
+        game_world.add_collision_pair('slime:catch', None, catch)
         pass
 
     def attack_(self):

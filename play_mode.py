@@ -33,6 +33,9 @@ def init():
     P_slimes = [P_SLIME() for _ in range(3)]
     game_world.add_objects(P_slimes, 1)
 
+    for slime in P_slimes:
+        game_world.add_collision_pair('slime:catch', slime, None)
+
     game_world.add_collision_pair('player:slime', player, None)
     for slime in slimes:
         game_world.add_collision_pair('player:slime', None, slime)

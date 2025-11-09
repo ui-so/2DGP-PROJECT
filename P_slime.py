@@ -77,7 +77,7 @@ class P_SLIME:
         pass
 
     def handle_collision(self, group, other):
-        if group == 'slime:attack':
-            print("Slime Hit!")
+        if group == 'slime:catch':
+            print("Slime catch!")
             game_world.remove_object(self)
         pass
