@@ -1,5 +1,6 @@
 import random
 import game_framework
+import game_world
 
 from pico2d import *
 
@@ -76,6 +77,7 @@ class SLIME:
         pass
 
     def handle_collision(self, group, other):
-        if group == 'player:slime':
-            print('Slime Collide Player')
+        if group == 'slime:attack':
+            print("Slime Hit!")
+            game_world.remove_object(self)
         pass

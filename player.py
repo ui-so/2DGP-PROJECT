@@ -284,7 +284,7 @@ class Player:
         attack = Attack(self.x + self.face_dir * 40, self.y, self.face_dir)
         print("Attack!")
         game_world.add_object(attack, 1)
-
+        game_world.add_collision_pair('slime:attack', None, attack)
 
 
     def get_bb(self):

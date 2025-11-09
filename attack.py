@@ -31,3 +31,6 @@ class Attack:
     def get_bb(self):
         return self.x - self.size//2, self.y - self.size//2, self.x + self.size//2, self.y + self.size//2
 
+    def handle_collision(self, group, other):
+        if group == 'slime:attack':
+            pass

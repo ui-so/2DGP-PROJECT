@@ -31,6 +31,8 @@ def init():
     game_world.add_collision_pair('player:slime', player, None)
     for slime in slimes:
         game_world.add_collision_pair('player:slime', None, slime)
+        game_world.add_collision_pair('slime:attack', slime, None)
+
 
 
 def update():
