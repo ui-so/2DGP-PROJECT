@@ -3,6 +3,23 @@ from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_d, SDL_KEYUP, SDLK_a, SDLK_w, SDL
 
 from state_machine import StateMachine
 
+import game_world
+import game_framework
+
+from attack import Attack
+
+# Player Run Speed
+PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
+RUN_SPEED_KMPH = 20.0  # Km / Hour
+RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
+RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
+RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
+
+# Player Action Speed
+TIME_PER_ACTION = 0.5
+ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
+FRAMES_PER_ACTION = 6
+
 # 키 상태 플래그
 right_pressed = False
 left_pressed = False
@@ -116,7 +133,8 @@ class Run:
         pass
 
     def exit(self, e):
-        pass
+        if space_down(e):
+            self.player.attack_()
 
     def do(self):
         global right_pressed, left_pressed, up_pressed, down_pressed
@@ -140,15 +158,16 @@ class Run:
             self.player.dir_y = 0
 
         # 위치 업데이트
-        self.player.frame = (self.player.frame + 1) % 6
-        self.player.x += self.player.dir_x * 0.5
-        self.player.y += self.player.dir_y * 0.5
+        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
+        self.player.x += self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
+        self.player.y += self.player.dir_y * RUN_SPEED_PPS * game_framework.frame_time
+
 
     def draw(self):
         if self.player.face_dir == 1:
-            self.player.image.clip_draw(self.player.frame * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
+            self.player.Run_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
         else:
-            self.player.image.clip_composite_draw(self.player.frame * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
+            self.player.Run_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
 
 
 class Idle:
@@ -158,65 +177,19 @@ class Idle:
     def enter(self, e):
         self.player.dir_x = 0
         self.player.dir_y = 0
-        self.player.wait_start_time = get_time()
 
     def exit(self, e):
-        pass
+        if space_down(e):
+            self.player.attack_()
 
     def do(self):
-        self.player.frame = (self.player.frame + 1) % 6
-        if get_time() - self.player.wait_start_time > 2.0:
-            self.player.state_machine.handle_state_event(('TIME_OUT', None))
+        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
 
     def draw(self):
         if self.player.face_dir == 1:
-            self.player.image.clip_draw(self.player.frame * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
+            self.player.Idle_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
         else:
-            self.player.image.clip_composite_draw(self.player.frame * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
-
-
-class Sleep:
-    def __init__(self, player):
-        self.player = player
-
-    def enter(self, e):
-        self.player.dir_x = 0
-        self.player.dir_y = 0
-
-    def exit(self, e):
-        pass
-
-    def do(self):
-        self.player.frame = (self.player.frame + 1) % 6
-
-    def draw(self):
-        if self.player.face_dir == 1:
-            self.player.image.clip_composite_draw(self.player.frame * 32, 0, 32, 32, -3.141592 / 2, ' ', self.player.x, self.player.y - 25, 100, 100)
-        else:
-            self.player.image.clip_composite_draw(self.player.frame * 32, 0, 32, 32, 3.141592 / 2, ' ', self.player.x, self.player.y - 25, 100, 100)
-
-
-class Attack:
-    def __init__(self, player):
-        self.player = player
-
-    def enter(self, e):
-        self.player.wait_start_time = get_time()
-
-    def exit(self, e):
-        pass
-
-    def do(self):
-        if get_time() - self.player.wait_start_time > 1.0:
-            self.player.state_machine.handle_state_event(('TIME_OUT', None))
-
-    def draw(self):
-        if self.player.face_dir == 1:
-            self.player.image.clip_draw(self.player.frame * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
-        else:
-            self.player.image.clip_composite_draw(self.player.frame * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
-
-        self.player.image.clip_draw(0, 0, 32, 32, self.player.x + 32, self.player.y, 30, 30)
+            self.player.Idle_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
 
 
 class Player:
@@ -226,22 +199,19 @@ class Player:
         self.face_dir = 1
         self.dir_x = 0
         self.dir_y = 0
-        self.image = load_image('Pink_Monster_Run_6.png')
+        self.Run_image = load_image('Player_Run.png')
+        self.Idle_image = load_image('Player_Idle.png')
 
         self.RUN = Run(self)
         self.IDLE = Idle(self)
-        self.SLEEP = Sleep(self)
-        self.ATTACK = Attack(self)
 
         self.state_machine = StateMachine(
             self.IDLE,
             {
-                self.SLEEP: {space_down: self.IDLE},
                 # IDLE: 키다운만 RUN으로 전이
-                self.IDLE: {time_out: self.SLEEP, right_down: self.RUN, left_down: self.RUN, up_down: self.RUN, down_down: self.RUN, mouse_left_down: self.ATTACK},
+                self.IDLE: {right_down: self.RUN, left_down: self.RUN, up_down: self.RUN, down_down: self.RUN},
                 # RUN: 상태 유지(모든 키 이벤트은 RUN에서 처리), 키업 후 모든 키 해제 시 all_keys_up으로 IDLE로 전이
-                self.RUN: {right_down: self.RUN, left_down: self.RUN, up_down: self.RUN, down_down: self.RUN, mouse_left_down: self.ATTACK, all_keys_up: self.IDLE},
-                self.ATTACK: {right_down: self.RUN, left_down: self.RUN, right_up: self.RUN, left_up: self.RUN, up_down: self.RUN, down_down: self.RUN, all_keys_up: self.IDLE, time_out: self.IDLE}
+                self.RUN: {right_down: self.RUN, left_down: self.RUN, up_down: self.RUN, down_down: self.RUN, all_keys_up: self.IDLE},
             }
         )
 
@@ -252,5 +222,14 @@ class Player:
         self.state_machine.draw()
 
     def handle_event(self, event):
+        e = ('INPUT', event)
+        # 마우스 왼쪽 클릭은 상태 전이와 무관하게 즉시 공격 생성
+        if mouse_left_down(e):
+            self.attack_()
         self.state_machine.handle_state_event(('INPUT', event))
         pass
+
+    def attack_(self):
+        attack = Attack(self.x + self.face_dir * 40, self.y, self.face_dir)
+        print("Attack!")
+        game_world.add_object(attack, 1)
