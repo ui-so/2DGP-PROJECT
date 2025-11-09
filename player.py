@@ -170,6 +170,9 @@ class Run:
         self.player.x += self.player.dir_x * RUN_SPEED_PPS * game_framework.frame_time
         self.player.y += self.player.dir_y * RUN_SPEED_PPS * game_framework.frame_time
 
+        global collision_time, collision_flag
+        if not collision_flag and get_time() - collision_time > 2.0:
+            collision_flag = True
 
     def draw(self):
         if self.player.face_dir == 1:
@@ -197,6 +200,9 @@ class Idle:
 
     def do(self):
         self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 4
+        global collision_time, collision_flag
+        if not collision_flag and get_time() - collision_time > 2.0:
+            collision_flag = True
 
     def draw(self):
         if self.player.face_dir == 1:
@@ -222,7 +228,9 @@ class Hurt:
         if self.player.frame > 3:
             self.player.frame = 0
             self.player.state_machine.handle_state_event(('Finish_Hurt', None))
-
+            global collision_flag, collision_time
+            collision_time = get_time()
+            collision_flag = False
 
     def draw(self):
         if self.player.face_dir == 1:
@@ -276,6 +284,7 @@ class Player:
         attack = Attack(self.x + self.face_dir * 40, self.y, self.face_dir)
         print("Attack!")
         game_world.add_object(attack, 1)
+
 
 
     def get_bb(self):
