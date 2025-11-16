@@ -30,7 +30,7 @@ down_pressed = False
 collision_flag = True
 collision_time = 0.0
 
-inventory = []
+inventory = [[],[],[],[]]
 
 # 이벤트 검사 함수들
 def space_down(e):
@@ -247,7 +247,7 @@ class Hurt:
 
 class Player:
     def __init__(self):
-        self.x, self.y = 400, 90
+        self.x, self.y = 512, 384
         self.frame = 0
         self.face_dir = 1
         self.dir_x = 0
