@@ -1,6 +1,7 @@
 import game_framework
 from pico2d import *
 
+from back_1 import Back
 from player import Player
 from slime import SLIME
 from P_slime import P_SLIME
@@ -22,7 +23,10 @@ def handle_events():
 
 
 def init():
-    global player, slimes, P_slimes
+    global player, slimes, P_slimes, back
+
+    back = Back()
+    game_world.add_object(back, 0)
 
     player = Player()
     game_world.add_object(player, 1)
@@ -44,13 +48,21 @@ def init():
 
 
 def update():
+    global player, back
     game_world.update()
+    if player.x < 50 and player.y < 434 and player.y > 334:
+        back.x = 0
+        back.y = 0
+        player.x = 512
+        player.y = 384
+
     game_world.handle_collisions()
 
 
 def draw():
     clear_canvas()
     game_world.render()
+    draw_rectangle(0, 334, 50, 434)
     update_canvas()
 
 
