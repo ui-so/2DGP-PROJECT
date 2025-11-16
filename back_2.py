@@ -1,8 +1,8 @@
 from pico2d import load_image
 
-class Back1:
+class Back2:
     def __init__(self):
-        self.image = load_image('Back_1.png')
+        self.image = load_image('Back_2.png')
         self.x = 256
         self.y = 0
 
