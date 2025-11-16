@@ -8,6 +8,7 @@ from player import Player
 from slime import SLIME
 from P_slime import P_SLIME
 import game_world
+import farm_shop
 
 back_1 = None
 back_2 = None
@@ -24,6 +25,12 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_e:
+            if MAP == 1:
+                global player
+                if player.x > 350 and player.x < 400 and player.y > 374 and player.y < 434:
+                    game_framework.push_mode(farm_shop)
+            pass
         else:
             player.handle_event(event)
 
@@ -81,6 +88,8 @@ def draw():
     game_world.render()
     if MAP == 0:
         draw_rectangle(0, 334, 50, 434)
+    elif MAP == 1:
+        draw_rectangle(350, 374, 400, 434)
     update_canvas()
 
 
