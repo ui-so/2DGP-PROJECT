@@ -21,7 +21,7 @@ class SLIME:
 
     def load_images(self):
         if SLIME.image is None:
-            SLIME.image = load_image('Slime_Run.png')
+            SLIME.image = load_image('Red_Slime_Run.png')
 
     def __init__(self):
         self.load_images()

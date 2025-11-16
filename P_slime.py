@@ -17,14 +17,26 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 7.0
 
 class P_SLIME:
-    image = None
+    green_image = None
+    blue_image = None
 
     def load_images(self):
-        if P_SLIME.image is None:
-            P_SLIME.image = load_image('P_Slime_Run.png')
+        if P_SLIME.green_image is None:
+            P_SLIME.green_image = load_image('Green_Slime_Run.png')
+        if P_SLIME.blue_image is None:
+            P_SLIME.blue_image = load_image('Blue_Slime_Run.png')
 
-    def __init__(self):
+    def __init__(self, num=1):
+        self.num = num
         self.load_images()
+        if self.num == 1:
+            self.image = P_SLIME.green_image
+            self.item_id = 'P_slime_green'  # 인벤토리용
+        elif self.num == 2:
+            self.image = P_SLIME.blue_image
+            self.item_id = 'P_slime_blue'  # 인벤토리용
+        else:
+            self.image = None  # 예외 처리
         self.frame = random.randint(0, int(FRAMES_PER_ACTION) - 1)
         self.dir_x = random.choice([-1, 1])
         self.dir_y = random.choice([-1, 1])
@@ -64,13 +76,15 @@ class P_SLIME:
 
 
     def draw(self):
-        if P_SLIME.image is None:
+        if self.image is None:
             return
+
         sx = int(self.frame) * 128
         if self.dir_x < 0:
-            P_SLIME.image.clip_composite_draw(sx, 0, 128, 128, 0, 'h', self.x, self.y, self.draw_w, self.draw_h)
+            self.image.clip_composite_draw(sx, 0, 128, 128, 0, 'h', self.x, self.y, self.draw_w, self.draw_h)
         else:
-            P_SLIME.image.clip_draw(sx, 0, 128, 128, self.x, self.y, self.draw_w, self.draw_h)
+            self.image.clip_draw(sx, 0, 128, 128, self.x, self.y, self.draw_w, self.draw_h)
+
         draw_rectangle(*self.get_bb())
 
     def handle_event(self, event):

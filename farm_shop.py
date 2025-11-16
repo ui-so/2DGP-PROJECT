@@ -79,17 +79,26 @@ def handle_events():
             elif x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 105 and y < 768 // 3 - 50:
                 if Now_slime:
                     item_name = Now_slime[0]
-                    item_count = Now_slime[1]
+                    count = 0
                     for i in range(4):
                         slot = player.inventory[i]
-                        if not slot:
-                            player.inventory[i] = [item_name, item_count]
-                            Now_slime = []
+                        if slot and slot[0] == item_name:
+                            player.inventory[i][1] += 1
+                            Now_slime[1] -= 1
+                            if Now_slime[1] == 0:
+                                Now_slime = []
                             break
-                        elif slot[0] == item_name:
-                            slot[1] += item_count
-                            Now_slime = []
-                            break
+                        else:
+                            count += 1
+                    if count == 4:
+                        for i in range(4):
+                            slot = player.inventory[i]
+                            if not slot:
+                                player.inventory[i] = [item_name, 1]
+                                Now_slime[1] -= 1
+                                if Now_slime[1] == 0:
+                                    Now_slime = []
+                                break
 
 
 def pause():

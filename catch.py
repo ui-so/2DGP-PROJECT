@@ -1,4 +1,6 @@
 from pico2d import *
+
+import P_slime
 import game_world
 import game_framework
 import player
@@ -32,13 +34,22 @@ class Catch:
     def handle_collision(self, group, other):
         if group == 'slime:catch':
             if play_mode.MAP == 0:
-                S = 'P_slime'
+                S = other.item_id
+                count = 0
                 for i in range(4):
-                    if not player.inventory[i]:
-                        player.inventory[i] = [S, 1]
-                        game_world.remove_object(self)
-                        break
-                    elif player.inventory[i][0] == S:
+                    if player.inventory[i] == S:
                         player.inventory[i][1] += 1
                         game_world.remove_object(self)
                         break
+                    else:
+                        count += 1
+                if count == 4:
+                    for i in range(4):
+                        if not player.inventory[i]:
+                            player.inventory[i] = [S, 1]
+                            game_world.remove_object(self)
+                            break
+                        elif player.inventory[i][0] == S:
+                            player.inventory[i][1] += 1
+                            game_world.remove_object(self)
+                            break

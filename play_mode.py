@@ -47,10 +47,12 @@ def init():
     player = Player()
     game_world.add_object(player, 1)
 
-    slimes = [SLIME() for _ in range(3)]
+    slimes = [SLIME() for _ in range(5)]
     game_world.add_objects(slimes, 1)
 
-    P_slimes = [P_SLIME() for _ in range(3)]
+    green_slimes = [P_SLIME(1) for _ in range(3)]
+    blue_slimes = [P_SLIME(2) for _ in range(3)]
+    P_slimes = green_slimes + blue_slimes
     game_world.add_objects(P_slimes, 1)
 
     for slime in P_slimes:
