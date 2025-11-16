@@ -26,7 +26,7 @@ class P_SLIME:
         if P_SLIME.blue_image is None:
             P_SLIME.blue_image = load_image('Blue_Slime_Run.png')
 
-    def __init__(self, num=1):
+    def __init__(self, num=1, limit_x1=0, limit_x2=1024, limit_y1=0, limit_y2=784):
         self.num = num
         self.load_images()
         if self.num == 1:
@@ -43,8 +43,15 @@ class P_SLIME:
         self.size = 200
         self.draw_w = 100
         self.draw_h = 100
-        self.x = random.randint(self.size // 2, 800 - self.size // 2)
-        self.y = random.randint(self.size // 2, 600 - self.size // 2)
+
+        self.limit_x1 = limit_x1
+        self.limit_x2 = limit_x2
+        self.limit_y1 = limit_y1
+        self.limit_y2 = limit_y2
+
+        self.x = random.randint(self.limit_x1 + self.size // 2, self.limit_x2 - self.size // 2)
+        self.y = random.randint(self.limit_y1 + self.size // 2, self.limit_y2 - self.size // 2)
+
 
         self.change_timer = random.uniform(1.0, 3.0)
 
@@ -66,12 +73,12 @@ class P_SLIME:
         half_w = self.draw_w // 2
         half_h = self.draw_h // 2
 
-        if self.x < half_w or self.x > 800 - half_w:
-            self.x = clamp(half_w, self.x, 800 - half_w)
+        if self.x < self.limit_x1 + half_w or self.x > self.limit_x2 - half_w:
+            self.x = clamp(self.limit_x1 + half_w, self.x, self.limit_x2 - half_w)
             self.dir_x *= -1
 
-        if self.y < half_h or self.y > 600 - half_h:
-            self.y = clamp(half_h, self.y, 600 - half_h)
+        if self.y < self.limit_y1 + half_h or self.y > self.limit_y2 - half_h:
+            self.y = clamp(self.limit_y1 + half_h, self.y, self.limit_y2 - half_h)
             self.dir_y *= -1
 
 
