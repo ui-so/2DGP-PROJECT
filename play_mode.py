@@ -1,6 +1,7 @@
 import game_framework
 from pico2d import *
 
+from ui import Ui
 from back_1 import Back1
 from back_2 import Back2
 from player import Player
@@ -28,7 +29,7 @@ def handle_events():
 
 
 def init():
-    global player, slimes, P_slimes, back_1, back_2
+    global player, slimes, P_slimes, back_1, back_2, ui
 
     back_1 = Back1()
     game_world.add_object(back_1, 0)
@@ -52,6 +53,8 @@ def init():
         game_world.add_collision_pair('player:slime', None, slime)
         game_world.add_collision_pair('slime:attack', slime, None)
 
+    ui = Ui()
+    game_world.add_object(ui, 3)
 
 
 def update():
