@@ -25,7 +25,7 @@ class Attack:
         self.size += 50 * game_framework.frame_time
         # 삭제 조건 만족 시 즉시 제거하고 update 종료
         if self.size > 60:
-            remove_object(self)  # from game_world import remove_object
+            game_world.remove_object(self)  # from game_world import remove_object
             return
 
     def get_bb(self):

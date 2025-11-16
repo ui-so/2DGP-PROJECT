@@ -4,6 +4,7 @@ import game_framework
 import game_world
 import play_mode
 from pannel import Pannel
+import player
 
 pannel = None
 
@@ -32,6 +33,13 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
+                global player
+                player.right_pressed = False
+                player.left_pressed = False
+                player.up_pressed = False
+                player.down_pressed = False
+                player.dir_x = 0
+                player.dir_y = 0
                 game_framework.pop_mode()
             elif event.key == SDLK_0:
                 play_mode.boy.item = None

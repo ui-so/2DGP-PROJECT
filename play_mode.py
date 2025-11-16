@@ -30,6 +30,7 @@ def handle_events():
                 global player
                 if player.x > 350 and player.x < 400 and player.y > 374 and player.y < 434:
                     game_framework.push_mode(farm_shop)
+
             pass
         else:
             player.handle_event(event)
@@ -68,18 +69,36 @@ def update():
     global player, back_1,back_2, slimes, P_slimes, MAP
     game_world.update()
     if MAP == 0:
-        if player.x < 50 and player.y < 434 and player.y > 334:
+        if player.x < 100 and player.y < 434 and player.y > 334:
             back_1.x = 0
             back_1.y = 0
             back_2.x = 0
             back_2.y = 0
             player.x = 512
             player.y = 384
-            for(o) in slimes:
-                game_world.remove_object(o)
-            for(o) in P_slimes:
-                game_world.remove_object(o)
+            for o in slimes:
+                try:
+                    game_world.remove_object(o)
+                except ValueError:
+                    pass
+            slimes.clear()
+
+            for o in P_slimes:
+                try:
+                    game_world.remove_object(o)
+                except ValueError:
+                    pass
+            P_slimes.clear()
             MAP = 1
+    elif MAP == 1:
+        if player.x > 924 and player.x < 1024 and player.y < 434 and player.y > 334:
+            back_1.x = 256
+            back_1.y = 0
+            back_2.x = 256
+            back_2.y = 0
+            player.x = 512
+            player.y = 384
+            MAP = 0
     game_world.handle_collisions()
 
 
@@ -87,8 +106,9 @@ def draw():
     clear_canvas()
     game_world.render()
     if MAP == 0:
-        draw_rectangle(0, 334, 50, 434)
+        draw_rectangle(0, 334, 100, 434)
     elif MAP == 1:
+        draw_rectangle(924, 334, 1024, 434)
         draw_rectangle(350, 374, 400, 434)
     update_canvas()
 
