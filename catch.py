@@ -2,7 +2,7 @@ from pico2d import *
 import game_world
 import game_framework
 import player
-from game_world import remove_object
+import play_mode
 
 PIXEL_PER_METER = (1.0 / 0.003)  # 1pixel = 3cm, 1m = 33.33 pixel
 
@@ -31,5 +31,14 @@ class Catch:
 
     def handle_collision(self, group, other):
         if group == 'slime:catch':
-            print("Catch! Total Slime:", player.inventory)
-            game_world.remove_object(self)
+            if play_mode.MAP == 0:
+                S = 'P_slime'
+                for i in range(4):
+                    if not player.inventory[i]:
+                        player.inventory[i] = [S, 1]
+                        game_world.remove_object(self)
+                        break
+                    elif player.inventory[i][0] == S:
+                        player.inventory[i][1] += 1
+                        game_world.remove_object(self)
+                        break
