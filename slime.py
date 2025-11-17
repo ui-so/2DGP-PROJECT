@@ -1,6 +1,8 @@
 import random
 import game_framework
 import game_world
+import play_mode
+from slime_attack import Slime_Attack
 
 from pico2d import *
 
@@ -36,6 +38,8 @@ class SLIME:
 
         self.change_timer = random.uniform(1.0, 3.0)
 
+        self.attack_time = get_time()
+
     def get_bb(self):
         return self.x - 30, self.y - 50, self.x + 30, self.y
 
@@ -62,6 +66,8 @@ class SLIME:
             self.y = clamp(half_h, self.y, 600 - half_h)
             self.dir_y *= -1
 
+        if self.x + 100 >= play_mode.player.x - 50 and self.x - 100 <= play_mode.player.x + 40 and self.y + 70 >= play_mode.player.y - 50 and self.y - 120 <= play_mode.player.y + 40:
+            self.attack()
 
     def draw(self):
         if SLIME.image is None:
@@ -72,6 +78,14 @@ class SLIME:
         else:
             SLIME.image.clip_draw(sx, 0, 128, 128, self.x, self.y, self.draw_w, self.draw_h)
         draw_rectangle(*self.get_bb())
+        draw_rectangle(self.x - 100, self.y - 120, self.x + 100, self.y+70)
+
+    def attack(self):
+        if get_time() - self.attack_time > 3.0:
+            self.attack_time = get_time()
+            attack = Slime_Attack(self.x, self.y, self.dir_x, play_mode.player.x, play_mode.player.y)
+            game_world.add_object(attack, 1)
+            game_world.add_collision_pair('player:slime_attack', None, attack)
 
     def handle_event(self, event):
         pass

@@ -55,6 +55,8 @@ def init():
     P_slimes = green_slimes + blue_slimes
     game_world.add_objects(P_slimes, 1)
 
+    game_world.add_collision_pair('player:slime_attack', player, None)
+
     for slime in P_slimes:
         game_world.add_collision_pair('slime:catch', slime, None)
 
