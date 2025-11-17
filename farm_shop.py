@@ -5,10 +5,13 @@ import game_world
 import play_mode
 from pannel import Pannel
 import player
+from P_slime import P_SLIME
 
 pannel = None
 select = 1
 Now_slime = []
+
+new_slime = None
 
 def init():
     global pannel
@@ -18,6 +21,25 @@ def init():
     pass
 
 def finish():
+    global Now_slime, new_slime
+    try:
+        for o in new_slime:
+            try:
+                game_world.remove_object(o)
+            except ValueError:
+                pass
+        new_slime.clear()
+    except (NameError, TypeError):
+        new_slime = []
+    new_slime.clear()
+
+    if Now_slime:
+        if Now_slime[0] == 'P_slime_green':
+            new_slime = [P_SLIME(1,8,400,435,640) for _ in range(Now_slime[1])]
+            game_world.add_objects(new_slime, 1)
+        elif Now_slime[0] == 'P_slime_blue':
+            new_slime = [P_SLIME(2,8,400,435,640) for _ in range(Now_slime[1])]
+            game_world.add_objects(new_slime, 1)
     game_world.remove_object(pannel)
 
 def update():

@@ -28,7 +28,7 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_e:
             if MAP == 1:
                 global player
-                if player.x > 350 and player.x < 400 and player.y > 374 and player.y < 434:
+                if player.x > 350 and player.x < 400 and player.y > 374 and player.y < 484:
                     game_framework.push_mode(farm_shop)
 
             pass
@@ -91,7 +91,16 @@ def update():
                 except ValueError:
                     pass
             P_slimes.clear()
+
+            if farm_shop.Now_slime:
+                if farm_shop.Now_slime[0] == 'P_slime_green':
+                    farm_shop.new_slime = [P_SLIME(1, 8, 400, 435, 640) for _ in range(farm_shop.Now_slime[1])]
+                    game_world.add_objects(farm_shop.new_slime, 1)
+                elif farm_shop.Now_slime[0] == 'P_slime_blue':
+                    farm_shop.new_slime = [P_SLIME(2, 8, 400, 435, 640) for _ in range(farm_shop.Now_slime[1])]
+                    game_world.add_objects(farm_shop.new_slime, 1)
             MAP = 1
+
     elif MAP == 1:
         if player.x > 924 and player.x < 1024 and player.y < 434 and player.y > 334:
             back_1.x = 256
@@ -100,7 +109,35 @@ def update():
             back_2.y = 0
             player.x = 512
             player.y = 384
+            try:
+                for o in farm_shop.new_slime:
+                    try:
+                        game_world.remove_object(o)
+                    except ValueError:
+                        pass
+                farm_shop.new_slime.clear()
+            except (NameError, TypeError):
+                farm_shop.new_slime = []
+            farm_shop.new_slime.clear()
+
+            slimes = [SLIME() for _ in range(5)]
+            game_world.add_objects(slimes, 1)
+            green_slimes = [P_SLIME(1) for _ in range(3)]
+            blue_slimes = [P_SLIME(2) for _ in range(3)]
+            P_slimes = green_slimes + blue_slimes
+            game_world.add_objects(P_slimes, 1)
+
+            for slime in P_slimes:
+                game_world.add_collision_pair('slime:catch', slime, None)
+
+            game_world.add_collision_pair('player:slime', player, None)
+            for slime in slimes:
+                game_world.add_collision_pair('player:slime', None, slime)
+                game_world.add_collision_pair('slime:attack', slime, None)
+
+
             MAP = 0
+
     game_world.handle_collisions()
 
 
@@ -111,7 +148,9 @@ def draw():
         draw_rectangle(0, 334, 100, 434)
     elif MAP == 1:
         draw_rectangle(924, 334, 1024, 434)
-        draw_rectangle(350, 374, 400, 434)
+        draw_rectangle(350, 374, 400, 484)
+
+        draw_rectangle(8, 435, 400, 640)
     update_canvas()
 
 
