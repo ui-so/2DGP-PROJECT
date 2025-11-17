@@ -218,7 +218,7 @@ class Idle:
 
 
 class Hurt:
-    def __init__(self, player):
+    def __init__(self, player, num = 0):
         self.player = player
 
     def enter(self, e):
@@ -309,4 +309,6 @@ class Player:
             if group == 'player:slime':
                 print("Player Hurt!")
                 self.state_machine.handle_state_event(('hurt', None))
+        if group == 'player:slime_attack':
+            self.state_machine.handle_state_event(('hurt', None))
         pass

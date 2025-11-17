@@ -83,7 +83,7 @@ class SLIME:
     def attack(self):
         if get_time() - self.attack_time > 3.0:
             self.attack_time = get_time()
-            attack = Slime_Attack(self.x, self.y, self.dir_x, play_mode.player.x, play_mode.player.y)
+            attack = Slime_Attack(self.x, self.y-25, self.dir_x, play_mode.player.x, play_mode.player.y)
             game_world.add_object(attack, 1)
             game_world.add_collision_pair('player:slime_attack', None, attack)
 

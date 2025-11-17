@@ -18,7 +18,7 @@ class Slime_Attack:
         if Slime_Attack.image == None:
             Slime_Attack.image = load_image('Slime_attack.png')
         self.dir = dir
-        self.size = 50
+        self.size = 35
         self.x, self.y = x, y
         self.sx, self.sy = self.x, self.y
         self.tx, self.ty = target_x, target_y
@@ -43,3 +43,5 @@ class Slime_Attack:
     def handle_collision(self, group, other):
         if group == 'slime:attack':
             pass
+        elif group == 'player:slime_attack':
+            game_world.remove_object(self)
