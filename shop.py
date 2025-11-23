@@ -69,39 +69,16 @@ def handle_events():
                 if selected_slot and len(selected_slot) == 2:
                     if selected_slot[1] > 0:
                         item_name = selected_slot[0]
-                        if not Now_slime:
-                            Now_slime = [item_name, 1]
-                            selected_slot[1] -= 1
-                        elif Now_slime[0] == item_name:
-                            Now_slime[1] += 1
-                            selected_slot[1] -= 1
-
-                        if selected_slot[1] == 0:
-                            player.inventory[select - 1] = []
-
-            elif x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 105 and y < 768 // 3 - 50:
-                if Now_slime:
-                    item_name = Now_slime[0]
-                    count = 0
-                    for i in range(4):
-                        slot = player.inventory[i]
-                        if slot and slot[0] == item_name:
-                            player.inventory[i][1] += 1
-                            Now_slime[1] -= 1
-                            if Now_slime[1] == 0:
-                                Now_slime = []
-                            break
-                        else:
-                            count += 1
-                    if count == 4:
-                        for i in range(4):
-                            slot = player.inventory[i]
-                            if not slot:
-                                player.inventory[i] = [item_name, 1]
-                                Now_slime[1] -= 1
-                                if Now_slime[1] == 0:
-                                    Now_slime = []
-                                break
+                        if item_name == 'Green_plort':
+                            player.gold += 10
+                            player.inventory[select-1][1] -= 1
+                            if player.inventory[select-1][1] <= 0:
+                                player.inventory[select-1] = []
+                        if item_name == 'Blue_plort':
+                            player.gold += 20
+                            player.inventory[select-1][1] -= 1
+                            if player.inventory[select-1][1] <= 0:
+                                player.inventory[select-1] = []
 
 
 def pause():
