@@ -23,10 +23,10 @@ class Plort:
 
         if self.num == 1:
             self.image = Plort.green_image
-            self.item_id = 'P_slime_green'  # 인벤토리용
+            self.item_id = 'Green_plort'  # 인벤토리용
         elif self.num == 2:
             self.image = Plort.blue_image
-            self.item_id = 'P_slime_blue'  # 인벤토리용
+            self.item_id = 'Blue_plort'  # 인벤토리용
         else:
             self.image = None  # 예외 처리
 

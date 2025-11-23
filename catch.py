@@ -39,7 +39,6 @@ class Catch:
                 for i in range(4):
                     if player.inventory[i] == S:
                         player.inventory[i][1] += 1
-                        game_world.remove_object(self)
                         break
                     else:
                         count += 1
@@ -47,9 +46,25 @@ class Catch:
                     for i in range(4):
                         if not player.inventory[i]:
                             player.inventory[i] = [S, 1]
-                            game_world.remove_object(self)
                             break
                         elif player.inventory[i][0] == S:
                             player.inventory[i][1] += 1
-                            game_world.remove_object(self)
                             break
+
+        elif group == 'catch:plort':
+            S = other.item_id
+            count = 0
+            for i in range(4):
+                if player.inventory[i] == S:
+                    player.inventory[i][1] += 1
+                    break
+                else:
+                    count += 1
+            if count == 4:
+                for i in range(4):
+                    if not player.inventory[i]:
+                        player.inventory[i] = [S, 1]
+                        break
+                    elif player.inventory[i][0] == S:
+                        player.inventory[i][1] += 1
+                        break

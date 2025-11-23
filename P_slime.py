@@ -64,7 +64,7 @@ class P_SLIME:
     def update(self):
         self.change_timer -= game_framework.frame_time
 
-        if get_time() - self.plort_timer > 10.0:
+        if get_time() - self.plort_timer > 3.0:
             self.plort_timer = get_time()
             plort = Plort(self.num, self.x, self.y)
             game_world.add_object(plort, 1)
