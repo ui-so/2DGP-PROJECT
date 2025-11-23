@@ -32,6 +32,7 @@ collision_flag = True
 collision_time = 0.0
 
 inventory = [[],[],[],[]]
+gold = 0
 
 # 이벤트 검사 함수들
 def space_down(e):
@@ -256,6 +257,9 @@ class Player:
         self.Run_image = load_image('Player_Run.png')
         self.Idle_image = load_image('Player_Idle.png')
         self.Hurt_image = load_image('Player_Hurt.png')
+
+        self.hp = 100
+        self.mp = 100
 
         self.RUN = Run(self)
         self.IDLE = Idle(self)

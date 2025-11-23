@@ -36,4 +36,5 @@ class Ui:
                     self.Blue_Plort.clip_draw(0, 0, 32, 32, 1024 // 2 + (i*70)-5, 768 // 6 - 80, 50, 50)
                     self.font.draw(1024 // 2 + (i*70) + 5, 768 // 6 - 40 - 20, f'{count}', (0, 0, 0))
 
+        self.font.draw(1024 // 2 - 100, 768 // 6 - 40, f'{player.gold}', (0, 0, 0))
         self.image.draw(1024 // 2, 768 // 4, 512, 382)
