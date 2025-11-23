@@ -44,8 +44,6 @@ def init():
     back_2 = Back2()
     game_world.add_object(back_2, 2)
 
-    player = Player()
-    game_world.add_object(player, 1)
 
     slimes = [SLIME() for _ in range(5)]
     game_world.add_objects(slimes, 1)
@@ -54,6 +52,9 @@ def init():
     blue_slimes = [P_SLIME(2) for _ in range(3)]
     P_slimes = green_slimes + blue_slimes
     game_world.add_objects(P_slimes, 1)
+
+    player = Player()
+    game_world.add_object(player, 1)
 
     game_world.add_collision_pair('player:slime_attack', player, None)
 

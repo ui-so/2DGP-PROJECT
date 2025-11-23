@@ -38,7 +38,7 @@ class SLIME:
 
         self.change_timer = random.uniform(1.0, 3.0)
 
-        self.attack_time = get_time()
+        self.attack_time = 0.0
 
     def get_bb(self):
         return self.x - 30, self.y - 50, self.x + 30, self.y

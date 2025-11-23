@@ -4,6 +4,8 @@ import game_world
 
 from pico2d import *
 
+from plort import Plort
+
 # Slime Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 RUN_SPEED_KMPH = 5.0  # Km / Hour
@@ -15,6 +17,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 7.0
+
 
 class P_SLIME:
     green_image = None
@@ -52,14 +55,20 @@ class P_SLIME:
         self.x = random.randint(self.limit_x1 + self.size // 2, self.limit_x2 - self.size // 2)
         self.y = random.randint(self.limit_y1 + self.size // 2, self.limit_y2 - self.size // 2)
 
-
         self.change_timer = random.uniform(1.0, 3.0)
+        self.plort_timer = get_time()
 
     def get_bb(self):
         return self.x - 30, self.y - 50, self.x + 30, self.y
 
     def update(self):
         self.change_timer -= game_framework.frame_time
+
+        if get_time() - self.plort_timer > 10.0:
+            self.plort_timer = get_time()
+            plort = Plort(self.num, self.x, self.y)
+            game_world.add_object(plort, 1)
+            game_world.add_collision_pair('catch:plort', None, plort)
 
         if self.change_timer < 0:
             self.dir_x = random.choice([-1, 1])

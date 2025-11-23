@@ -9,6 +9,7 @@ import game_framework
 from attack import Attack
 from catch import Catch
 
+
 # Player Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
 RUN_SPEED_KMPH = 20.0  # Km / Hour
@@ -292,6 +293,7 @@ class Player:
         catch = Catch(self.x+50, self.y, self.face_dir)
         game_world.add_object(catch, 1)
         game_world.add_collision_pair('slime:catch', None, catch)
+        game_world.add_collision_pair('catch:plort', catch, None)
         pass
 
     def attack_(self):
