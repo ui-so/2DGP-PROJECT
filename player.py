@@ -32,6 +32,7 @@ collision_flag = True
 collision_time = 0.0
 
 inventory = [[],[],[],[]]
+inventory_max = 10
 gold = 0
 
 # 이벤트 검사 함수들
@@ -140,6 +141,9 @@ def hurt(e):
 def Finish_Hurt(e):
     return e[0] == 'Finish_Hurt'
 
+def death(e):
+    return e[0] == 'death'
+
 class Run:
     def __init__(self, player):
         self.player = player
@@ -247,6 +251,33 @@ class Hurt:
             self.player.Hurt_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
 
 
+
+class Death:
+    def __init__(self, player):
+        self.player = player
+
+    def enter(self, e):
+        self.player.frame = 0
+
+    def exit(self, e):
+        global inventory
+        for i in range(4):
+            inventory[i] = []
+        self.player.hp = 100
+
+    def do(self):
+        self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 0.5)
+        if self.player.frame > 7:
+            self.player.frame = 0
+            self.player.state_machine.handle_state_event(('Finish_Hurt', None))
+
+    def draw(self):
+        if self.player.face_dir == 1:
+            self.player.Death_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
+        else:
+            self.player.Death_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
+
+
 class Player:
     def __init__(self):
         self.x, self.y = 512, 384
@@ -257,6 +288,7 @@ class Player:
         self.Run_image = load_image('Player_Run.png')
         self.Idle_image = load_image('Player_Idle.png')
         self.Hurt_image = load_image('Player_Hurt.png')
+        self.Death_image = load_image('Player_Death.png')
 
         self.hp = 100
         self.mp = 100
@@ -264,15 +296,17 @@ class Player:
         self.RUN = Run(self)
         self.IDLE = Idle(self)
         self.Hurt = Hurt(self)
+        self.Death = Death(self)
 
         self.state_machine = StateMachine(
             self.IDLE,
             {
                 # IDLE: 키다운만 RUN으로 전이
-                self.IDLE: {right_down: self.RUN, left_down: self.RUN, up_down: self.RUN, down_down: self.RUN,hurt:self.Hurt},
+                self.IDLE: {right_down: self.RUN, left_down: self.RUN, up_down: self.RUN, down_down: self.RUN, hurt:self.Hurt, death:self.Death},
                 # RUN: 상태 유지(모든 키 이벤트은 RUN에서 처리), 키업 후 모든 키 해제 시 all_keys_up으로 IDLE로 전이
-                self.RUN: {right_down: self.RUN, left_down: self.RUN, up_down: self.RUN, down_down: self.RUN, all_keys_up: self.IDLE, hurt:self.Hurt},
-                self.Hurt: {Finish_Hurt:self.IDLE},
+                self.RUN: {right_down: self.RUN, left_down: self.RUN, up_down: self.RUN, down_down: self.RUN, all_keys_up: self.IDLE, hurt:self.Hurt, death:self.Death},
+                self.Hurt: {Finish_Hurt:self.IDLE,death:self.Death},
+                self.Death: {Finish_Hurt: self.IDLE},
             }
         )
 
@@ -311,10 +345,23 @@ class Player:
         return self.x-50, self.y-50, self.x+40, self.y+40
 
     def handle_collision(self, group, other):
+        global collision_flag, collision_time
         if collision_flag == True:
             if group == 'player:slime':
                 print("Player Hurt!")
-                self.state_machine.handle_state_event(('hurt', None))
+                self.hp -= 10
+
+                collision_flag = False
+                collision_time = get_time()
+
+                if self.hp <= 0:
+                    self.state_machine.handle_state_event(('death', None))
+                else:
+                    self.state_machine.handle_state_event(('hurt', None))
         if group == 'player:slime_attack':
-            self.state_machine.handle_state_event(('hurt', None))
+            self.hp -= 5
+            if self.hp <= 0:
+                self.state_machine.handle_state_event(('death', None))
+            else:
+                self.state_machine.handle_state_event(('hurt', None))
         pass
