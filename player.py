@@ -33,6 +33,8 @@ collision_time = 0.0
 
 inventory = [[],[],[],[]]
 inventory_max = 10
+hp_max = 100
+mp_max = 100
 gold = 0
 
 # 이벤트 검사 함수들
