@@ -1,11 +1,14 @@
 from pico2d import load_image, load_font
 
 import player
+import play_mode
 
 class Ui:
     def __init__(self):
         global P_slime
         self.image = load_image('UI.png')
+        self.HP = load_image('HP.png')
+        self.MP = load_image('MP.png')
         self.Green_slime_image = load_image('Green_Slime_RUN.png')
         self.Blue_slime_image = load_image('Blue_Slime_RUN.png')
         self.Green_Plort = load_image('Green_Plort.png')
@@ -38,3 +41,7 @@ class Ui:
 
         self.font.draw(1024 // 2 - 100, 768 // 6 - 40, f'{player.gold}', (0, 0, 0))
         self.image.draw(1024 // 2, 768 // 4, 512, 382)
+        hp = play_mode.player.hp
+        self.HP.clip_draw(0,0, hp*2, 10, 1024//2 - 150, 768//6-100)
+        mp = play_mode.player.mp
+        self.MP.clip_draw(0,0, mp*2, 10, 1024//2 - 150, 768//6-70)
