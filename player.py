@@ -5,6 +5,7 @@ from state_machine import StateMachine
 
 import game_world
 import game_framework
+import play_mode
 
 from attack import Attack
 from catch import Catch
@@ -12,7 +13,7 @@ from catch import Catch
 
 # Player Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 20.0  # Km / Hour
+RUN_SPEED_KMPH = 15.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -190,9 +191,9 @@ class Run:
 
     def draw(self):
         if self.player.face_dir == 1:
-            self.player.Run_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
+            self.player.Run_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x-play_mode.camera_x, self.player.y-play_mode.camera_y, 100, 100)
         else:
-            self.player.Run_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
+            self.player.Run_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x-play_mode.camera_x, self.player.y-play_mode.camera_y, 100, 100)
 
 
 class Idle:
@@ -220,9 +221,9 @@ class Idle:
 
     def draw(self):
         if self.player.face_dir == 1:
-            self.player.Idle_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
+            self.player.Idle_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x-play_mode.camera_x, self.player.y-play_mode.camera_y, 100, 100)
         else:
-            self.player.Idle_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
+            self.player.Idle_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x-play_mode.camera_x, self.player.y-play_mode.camera_y, 100, 100)
 
 
 class Hurt:
@@ -248,9 +249,9 @@ class Hurt:
 
     def draw(self):
         if self.player.face_dir == 1:
-            self.player.Hurt_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
+            self.player.Hurt_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x-play_mode.camera_x, self.player.y-play_mode.camera_y, 100, 100)
         else:
-            self.player.Hurt_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
+            self.player.Hurt_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x-play_mode.camera_x, self.player.y-play_mode.camera_y, 100, 100)
 
 
 
@@ -275,9 +276,9 @@ class Death:
 
     def draw(self):
         if self.player.face_dir == 1:
-            self.player.Death_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x, self.player.y, 100, 100)
+            self.player.Death_image.clip_draw(int(self.player.frame) * 32, 0, 32, 32, self.player.x-play_mode.camera_x, self.player.y-play_mode.camera_y, 100, 100)
         else:
-            self.player.Death_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x, self.player.y, 100, 100)
+            self.player.Death_image.clip_composite_draw(int(self.player.frame) * 32, 0, 32, 32, 0, 'h', self.player.x-play_mode.camera_x, self.player.y-play_mode.camera_y, 100, 100)
 
 
 class Player:
@@ -344,7 +345,9 @@ class Player:
 
 
     def get_bb(self):
-        return self.x-50, self.y-50, self.x+40, self.y+40
+        sx = self.x - play_mode.camera_x
+        sy = self.y - play_mode.camera_y
+        return sx - 50, sy - 50, sx + 40, sy + 40
 
     def handle_collision(self, group, other):
         global collision_flag, collision_time

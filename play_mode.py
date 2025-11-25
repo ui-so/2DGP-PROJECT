@@ -2,8 +2,7 @@ import game_framework
 from pico2d import *
 
 from ui import Ui
-from back_1 import Back1
-from back_2 import Back2
+from background import Back
 from player import Player
 from slime import SLIME
 from P_slime import P_SLIME
@@ -11,8 +10,16 @@ import game_world
 import farm_shop
 import shop
 
-back_1 = None
-back_2 = None
+BG_W = 1350
+BG_H = 1350
+
+MAP_WIDTH = BG_W * 4.0
+MAP_HEIGHT = BG_H * 4.0
+
+camera_x = 0
+camera_y = 0
+
+back = None
 player = None
 slimes = None
 P_slimes = None
@@ -41,10 +48,8 @@ def handle_events():
 def init():
     global player, slimes, P_slimes, back_1, back_2, ui
 
-    back_1 = Back1()
-    game_world.add_object(back_1, 0)
-    back_2 = Back2()
-    game_world.add_object(back_2, 2)
+    back = Back()
+    game_world.add_object(back, 0)
 
 
     slimes = [SLIME() for _ in range(5)]
@@ -73,7 +78,13 @@ def init():
 
 
 def update():
-    global player, back_1,back_2, slimes, P_slimes, MAP
+    global camera_x, camera_y, player, back_1,back_2, slimes, P_slimes, MAP
+    camera_x = player.x - 1024 // 2
+    camera_y = player.y - 768 // 2
+
+    camera_x = max(0, min(camera_x, MAP_WIDTH - 1024))
+    camera_y = max(0, min(camera_y, MAP_HEIGHT - 768))
+
     game_world.update()
     if MAP == 0:
         if player.x < 100 and player.y < 434 and player.y > 334:
