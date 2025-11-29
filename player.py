@@ -1,3 +1,5 @@
+import math
+
 from pico2d import load_image, get_time, draw_rectangle
 from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_d, SDL_KEYUP, SDLK_a, SDLK_w, SDLK_s, SDL_MOUSEBUTTONDOWN
 
@@ -13,7 +15,7 @@ from catch import Catch
 
 # Player Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 15.0  # Km / Hour
+RUN_SPEED_KMPH = 20.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -283,7 +285,7 @@ class Death:
 
 class Player:
     def __init__(self):
-        self.x, self.y = 512, 384
+        self.x, self.y = 1925, 870
         self.frame = 0
         self.face_dir = 1
         self.dir_x = 0
@@ -316,9 +318,36 @@ class Player:
     def update(self):
         self.state_machine.update()
 
+        if play_mode.MAP == 0:
+            cx, cy = 1925, 890
+            rx, ry = 300, 230
+
+            # 2. 사각형 정보 (연결된 다리)
+            # 타원 오른쪽에서 시작해서 집까지 이어지는 길
+            # (left, bottom, right, top)
+            rl, rb, rr, rt = 1325, 840, 1725, 1010
+
+            # 함수 호출
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+
     def draw(self):
         self.state_machine.draw()
         draw_rectangle(*self.get_bb())
+
+        # --- 디버깅용 변수 (update와 동일하게 설정) ---
+        cx, cy, rx, ry = 1925, 890, 300, 230
+        rl, rb, rr, rt = 1325, 840, 1725, 1010
+
+        # --- 화면 좌표 변환 ---
+        cam_x = play_mode.camera_x
+        cam_y = play_mode.camera_y
+
+        # 1. 타원 그리기 (이전에 만든 함수 사용)
+        self.draw_ellipse_debug(cx - cam_x, cy - cam_y, rx, ry)
+
+        # 2. 사각형 그리기
+        draw_rectangle(rl - cam_x, rb - cam_y, rr - cam_x, rt - cam_y)
+
 
     def handle_event(self, event):
         e = ('INPUT', event)
@@ -331,17 +360,81 @@ class Player:
         pass
 
     def catch_(self):
-        catch = Catch(self.x+50, self.y, self.face_dir)
+        catch = Catch(self.x - play_mode.camera_x +50, self.y-play_mode.camera_y, self.face_dir)
         game_world.add_object(catch, 1)
         game_world.add_collision_pair('slime:catch', None, catch)
         game_world.add_collision_pair('catch:plort', catch, None)
         pass
 
     def attack_(self):
-        attack = Attack(self.x + self.face_dir * 40, self.y, self.face_dir)
+        attack = Attack(self.x - play_mode.camera_x + self.face_dir * 40, self.y - play_mode.camera_y, self.face_dir)
         print("Attack!")
         game_world.add_object(attack, 1)
         game_world.add_collision_pair('slime:attack', None, attack)
+
+    def ellipse_map_limit(self, ceneter_x, center_y, rx, ry):
+        dx = self.x - ceneter_x
+        dy = self.y - center_y
+        distance = (dx**2) / (rx**2) + (dy**2) / (ry**2)
+
+        if distance > 1.0:
+            scale = 1 / math.sqrt(distance)
+            self.x = ceneter_x + dx * scale
+            self.y = center_y + dy * scale
+
+
+
+    def combined_map_limit(self, cx, cy, rx, ry, rect_l, rect_b, rect_r, rect_t):
+        # --- 1. 타원 내부 체크 ---
+        dx = self.x - cx
+        dy = self.y - cy
+        # 타원 판별식: (x^2/a^2) + (y^2/b^2) <= 1 이면 내부
+        ellipse_val = (dx ** 2) / (rx ** 2) + (dy ** 2) / (ry ** 2)
+
+        if ellipse_val <= 1.0:
+            return  # 타원 안에 있으므로 이동 허용 (종료)
+
+        # --- 2. 사각형 내부 체크 ---
+        # x가 left~right 사이이고, y가 bottom~top 사이인지 확인
+        if rect_l <= self.x <= rect_r and rect_b <= self.y <= rect_t:
+            return  # 사각형 안에 있으므로 이동 허용 (종료)
+
+        # --- 3. 둘 다 벗어났을 때 (보정 로직) ---
+
+        # (A) 타원 경계선 상의 가장 가까운 점(근사치) 구하기
+        scale = 1 / math.sqrt(ellipse_val)
+        ellipse_clamped_x = cx + dx * scale
+        ellipse_clamped_y = cy + dy * scale
+
+        # 플레이어와 타원 경계 사이의 거리 제곱
+        dist_ellipse = (self.x - ellipse_clamped_x) ** 2 + (self.y - ellipse_clamped_y) ** 2
+
+        # (B) 사각형 경계선 상의 가장 가까운 점 구하기 (Clamp)
+        rect_clamped_x = max(rect_l, min(self.x, rect_r))
+        rect_clamped_y = max(rect_b, min(self.y, rect_t))
+
+        # 플레이어와 사각형 경계 사이의 거리 제곱
+        dist_rect = (self.x - rect_clamped_x) ** 2 + (self.y - rect_clamped_y) ** 2
+
+        # (C) 더 가까운 쪽으로 플레이어 위치 수정
+        if dist_ellipse < dist_rect:
+            self.x = ellipse_clamped_x
+            self.y = ellipse_clamped_y
+        else:
+            self.x = rect_clamped_x
+            self.y = rect_clamped_y
+
+    def draw_ellipse_debug(self, cx, cy, rx, ry):
+        for deg in range(0, 360, 10):
+            rad = math.radians(deg)
+
+            # 타원 좌표 공식
+            # x = center_x + radius_x * cos(theta)
+            # y = center_y + radius_y * sin(theta)
+            x = cx + math.cos(rad) * rx
+            y = cy + math.sin(rad) * ry
+
+            draw_rectangle(x - 2, y - 2, x + 2, y + 2)
 
 
     def get_bb(self):
