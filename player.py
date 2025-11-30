@@ -1,4 +1,5 @@
 import math
+from operator import contains
 
 from pico2d import load_image, get_time, draw_rectangle
 from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_d, SDL_KEYUP, SDLK_a, SDLK_w, SDLK_s, SDL_MOUSEBUTTONDOWN
@@ -15,7 +16,7 @@ from catch import Catch
 
 # Player Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 20.0  # Km / Hour
+RUN_SPEED_KMPH = 40.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -39,6 +40,9 @@ inventory_max = 10
 hp_max = 100
 mp_max = 100
 gold = 0
+
+cx, cy, rx, ry = 1925, 890, 300, 230
+rl, rb, rr, rt = 1325, 840, 1725, 1010
 
 # 이벤트 검사 함수들
 def space_down(e):
@@ -317,26 +321,146 @@ class Player:
 
     def update(self):
         self.state_machine.update()
+        global cx, cy, rx, ry, rl, rb, rr, rt
+        if play_mode.MAP == 'spawn_1':
+            if self.x < 1525:
+                play_mode.MAP = 'farm'
+                cx, cy = 780, 935
+                rx, ry = 515, 345
+                rl, rb, rr, rt = 1225, 840, 1725, 1010
+            elif self.x > 2000:
+                play_mode.MAP = 'spawn_2'
+                cx, cy = 1925, 890
+                rx, ry = 300, 230
+                rl, rb, rr, rt = 2100, 800, 2725, 990
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+        elif play_mode.MAP == 'spawn_2':
+            if self.x < 2000:
+                play_mode.MAP = 'spawn_1'
+                cx, cy = 1925, 890
+                rx, ry = 300, 230
+                rl, rb, rr, rt = 1325, 840, 1725, 1010
+            elif self.x > 2500:
+                play_mode.MAP = 'prairie_1'
+                cx, cy = 3670, 860
+                rx, ry = 890, 520
+                rl, rb, rr, rt = 2100, 800, 3025, 990
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
 
-        if play_mode.MAP == 0:
-            cx, cy = 1925, 890
-            rx, ry = 300, 230
+        elif play_mode.MAP == 'farm':
+            if self.x > 1525:
+                play_mode.MAP = 'spawn_1'
+                cx, cy = 1925, 890
+                rx, ry = 300, 230
+                rl, rb, rr, rt = 1325, 840, 1725, 1010
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
 
-            # 2. 사각형 정보 (연결된 다리)
-            # 타원 오른쪽에서 시작해서 집까지 이어지는 길
-            # (left, bottom, right, top)
-            rl, rb, rr, rt = 1325, 840, 1725, 1010
+        elif play_mode.MAP == 'prairie_1':
+            if self.y > 1100:
+                play_mode.MAP = 'prairie_2'
+                cx, cy = 3670, 860
+                rx, ry = 890, 520
+                rl, rb, rr, rt = 3560, 1260, 3760, 2300
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+        elif play_mode.MAP == 'prairie_2':
+            if self.y < 1100:
+                play_mode.MAP = 'prairie_1'
+                cx, cy = 3670, 860
+                rx, ry = 890, 520
+                rl, rb, rr, rt = 2100, 800, 3025, 990
+            elif self.y > 2000:
+                play_mode.MAP = 'lava_1'
+                cx, cy = 3650, 2570
+                rx, ry = 900, 500
+                rl, rb, rr, rt = 3560, 1260, 3760, 2300
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
 
-            # 함수 호출
+        elif play_mode.MAP == 'lava_1':
+            if self.y < 1500:
+                play_mode.MAP = 'prairie_2'
+                cx, cy = 3670, 860
+                rx, ry = 890, 520
+                rl, rb, rr, rt = 3560, 1260, 3760, 2300
+            elif self.x < 3000:
+                play_mode.MAP = 'lava_2'
+                cx, cy = 3650, 2570
+                rx, ry = 900, 500
+                rl, rb, rr, rt = 2100, 2450, 3025, 2550
+            elif self.y > 2700:
+                play_mode.MAP = 'lave_3'
+                cx, cy = 3650, 2570
+                rx, ry = 900, 500
+                rl, rb, rr, rt = 3460, 2960, 3660, 3650
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+        elif play_mode.MAP == 'lava_2':
+            if self.x > 3000:
+                play_mode.MAP = 'lava_1'
+                cx, cy = 3650, 2570
+                rx, ry = 900, 500
+                rl, rb, rr, rt = 3560, 1260, 3760, 2300
+            elif self.x < 2300:
+                play_mode.MAP = 'ice_1'
+                cx, cy = 1200, 2500
+                rx, ry = 900, 520
+                rl, rb, rr, rt = 2000, 2450, 3025, 2550
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+        elif play_mode.MAP == 'lave_3':
+            if self.y < 2500:
+                play_mode.MAP = 'lava_1'
+                cx, cy = 3650, 2570
+                rx, ry = 900, 500
+                rl, rb, rr, rt = 3560, 1260, 3760, 2300
+            elif self.y > 3200:
+                play_mode.MAP = 'cave_1'
+                cx, cy = 3500, 4080
+                rx, ry = 1000, 500
+                rl, rb, rr, rt = 3460, 2960, 3660, 3650
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+
+        elif play_mode.MAP == 'ice_1':
+            if self.x > 2300:
+                play_mode.MAP = 'lava_2'
+                cx, cy = 3650, 2570
+                rx, ry = 900, 500
+                rl, rb, rr, rt = 2100, 2450, 3025, 2550
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+
+        elif play_mode.MAP == 'cave_1':
+            if self.y < 3500:
+                play_mode.MAP = 'lave_3'
+                cx, cy = 3650, 2570
+                rx, ry = 900, 500
+                rl, rb, rr, rt = 3460, 2960, 3660, 3650
+            elif self.x < 2600:
+                play_mode.MAP = 'cave_2'
+                cx, cy = 3500, 4080
+                rx, ry = 1000, 500
+                rl, rb, rr, rt = 1800, 3950, 3025, 4150
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+        elif play_mode.MAP == 'cave_2':
+            if self.x < 2300:
+                play_mode.MAP = 'end_1'
+                cx, cy = 1100, 4050
+                rx, ry = 800, 420
+                rl, rb, rr, rt = 1800, 3950, 3025, 4150
+            elif self.y < 3800:
+                play_mode.MAP = 'cave_1'
+                cx, cy = 3500, 4080
+                rx, ry = 1000, 500
+                rl, rb, rr, rt = 3460, 2960, 3660, 3650
+            self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+
+        elif play_mode.MAP == 'end_1':
+            if self.x > 2300:
+                play_mode.MAP = 'cave_1'
+                cx, cy = 3500, 4080
+                rx, ry = 1000, 500
+                rl, rb, rr, rt = 1800, 3950, 3025, 4150
             self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
 
     def draw(self):
         self.state_machine.draw()
         draw_rectangle(*self.get_bb())
-
-        # --- 디버깅용 변수 (update와 동일하게 설정) ---
-        cx, cy, rx, ry = 1925, 890, 300, 230
-        rl, rb, rr, rt = 1325, 840, 1725, 1010
 
         # --- 화면 좌표 변환 ---
         cam_x = play_mode.camera_x

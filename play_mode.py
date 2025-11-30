@@ -24,7 +24,7 @@ player = None
 slimes = None
 P_slimes = None
 
-MAP = 0
+MAP = 'spawn_1'
 
 def handle_events():
     event_list = get_events()
