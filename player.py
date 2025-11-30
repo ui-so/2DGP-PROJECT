@@ -334,6 +334,9 @@ class Player:
                 rx, ry = 300, 230
                 rl, rb, rr, rt = 2100, 800, 2725, 990
             self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+            sx, sy = 1910, 1050
+            self.rectangle_obstacle(sx - 100, sy - 80, sx + 100, sy + 80)
+
         elif play_mode.MAP == 'spawn_2':
             if self.x < 2000:
                 play_mode.MAP = 'spawn_1'
@@ -346,6 +349,8 @@ class Player:
                 rx, ry = 890, 520
                 rl, rb, rr, rt = 2100, 800, 3025, 990
             self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
+            sx, sy = 1910, 1050
+            self.rectangle_obstacle(sx - 100, sy - 80, sx + 100, sy + 80)
 
         elif play_mode.MAP == 'farm':
             if self.x > 1525:
@@ -496,51 +501,47 @@ class Player:
         game_world.add_object(attack, 1)
         game_world.add_collision_pair('slime:attack', None, attack)
 
-    def ellipse_map_limit(self, ceneter_x, center_y, rx, ry):
-        dx = self.x - ceneter_x
-        dy = self.y - center_y
-        distance = (dx**2) / (rx**2) + (dy**2) / (ry**2)
+    def rectangle_obstacle(self, left, bottom, right, top):
+        if left < self.x < right and bottom < self.y < top:
+            dist_left = self.x - left
+            dist_right = right - self.x
+            dist_bottom = self.y - bottom
+            dist_top = top - self.y
 
-        if distance > 1.0:
-            scale = 1 / math.sqrt(distance)
-            self.x = ceneter_x + dx * scale
-            self.y = center_y + dy * scale
+            min_dist = min(dist_left, dist_right, dist_bottom, dist_top)
 
+            if min_dist == dist_left:
+                self.x = left - 1.0
+            elif min_dist == dist_right:
+                self.x = right + 1.0
+            elif min_dist == dist_bottom:
+                self.y = bottom - 1.0
+            else:
+                self.y = top + 1.0
 
 
     def combined_map_limit(self, cx, cy, rx, ry, rect_l, rect_b, rect_r, rect_t):
-        # --- 1. 타원 내부 체크 ---
         dx = self.x - cx
         dy = self.y - cy
-        # 타원 판별식: (x^2/a^2) + (y^2/b^2) <= 1 이면 내부
         ellipse_val = (dx ** 2) / (rx ** 2) + (dy ** 2) / (ry ** 2)
 
         if ellipse_val <= 1.0:
-            return  # 타원 안에 있으므로 이동 허용 (종료)
+            return
 
-        # --- 2. 사각형 내부 체크 ---
-        # x가 left~right 사이이고, y가 bottom~top 사이인지 확인
         if rect_l <= self.x <= rect_r and rect_b <= self.y <= rect_t:
-            return  # 사각형 안에 있으므로 이동 허용 (종료)
+            return
 
-        # --- 3. 둘 다 벗어났을 때 (보정 로직) ---
-
-        # (A) 타원 경계선 상의 가장 가까운 점(근사치) 구하기
         scale = 1 / math.sqrt(ellipse_val)
         ellipse_clamped_x = cx + dx * scale
         ellipse_clamped_y = cy + dy * scale
 
-        # 플레이어와 타원 경계 사이의 거리 제곱
         dist_ellipse = (self.x - ellipse_clamped_x) ** 2 + (self.y - ellipse_clamped_y) ** 2
 
-        # (B) 사각형 경계선 상의 가장 가까운 점 구하기 (Clamp)
         rect_clamped_x = max(rect_l, min(self.x, rect_r))
         rect_clamped_y = max(rect_b, min(self.y, rect_t))
 
-        # 플레이어와 사각형 경계 사이의 거리 제곱
         dist_rect = (self.x - rect_clamped_x) ** 2 + (self.y - rect_clamped_y) ** 2
 
-        # (C) 더 가까운 쪽으로 플레이어 위치 수정
         if dist_ellipse < dist_rect:
             self.x = ellipse_clamped_x
             self.y = ellipse_clamped_y
@@ -564,7 +565,7 @@ class Player:
     def get_bb(self):
         sx = self.x - play_mode.camera_x
         sy = self.y - play_mode.camera_y
-        return sx - 50, sy - 50, sx + 40, sy + 40
+        return sx - 40, sy - 50, sx + 30, sy + 30
 
     def handle_collision(self, group, other):
         global collision_flag, collision_time

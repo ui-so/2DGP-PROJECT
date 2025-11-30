@@ -38,8 +38,9 @@ def handle_events():
             if MAP == 1:
                 if player.x > 350 and player.x < 400 and player.y > 374 and player.y < 484:
                     game_framework.push_mode(farm_shop)
-            if MAP == 0:
-                if player.x > 387 and player.x < 637 and player.y > 600 and player.y < 780:
+            if MAP == 'spawn_1' or MAP == 'spawn_2':
+                shop_x, shop_y = 1910, 950
+                if (shop_x - 50 < player.x < shop_x + 50) and (shop_y - 50 < player.y < shop_y + 50):
                     game_framework.push_mode(shop)
         else:
             player.handle_event(event)
@@ -161,14 +162,12 @@ def update():
 def draw():
     clear_canvas()
     game_world.render()
-    if MAP == 0:
-        draw_rectangle(0, 334, 100, 434)
-        draw_rectangle(387, 600, 637, 780)
-    elif MAP == 1:
-        draw_rectangle(924, 334, 1024, 434)
-        draw_rectangle(350, 374, 400, 484)
+    if MAP == 'spawn_1' or MAP == 'spawn_2':
+        sx, sy = 1910 - camera_x, 950 - camera_y
+        draw_rectangle(sx - 50, sy - 50, sx + 50, sy + 50)
 
-        draw_rectangle(8, 435, 400, 640)
+        sx, sy = 1910 - camera_x, 1050 - camera_y
+        draw_rectangle(sx - 80, sy - 80, sx + 80, sy + 80)
     update_canvas()
 
 
