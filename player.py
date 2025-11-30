@@ -325,6 +325,7 @@ class Player:
         if play_mode.MAP == 'spawn_1':
             if self.x < 1525:
                 play_mode.MAP = 'farm'
+                play_mode.ISLAND = 'farm'
                 cx, cy = 780, 935
                 rx, ry = 515, 345
                 rl, rb, rr, rt = 1225, 840, 1725, 1010
@@ -345,6 +346,7 @@ class Player:
                 rl, rb, rr, rt = 1325, 840, 1725, 1010
             elif self.x > 2500:
                 play_mode.MAP = 'prairie_1'
+                play_mode.ISLAND = 'prairie'
                 cx, cy = 3670, 860
                 rx, ry = 890, 520
                 rl, rb, rr, rt = 2100, 800, 3025, 990
@@ -355,6 +357,7 @@ class Player:
         elif play_mode.MAP == 'farm':
             if self.x > 1525:
                 play_mode.MAP = 'spawn_1'
+                play_mode.ISLAND = 'spawn'
                 cx, cy = 1925, 890
                 rx, ry = 300, 230
                 rl, rb, rr, rt = 1325, 840, 1725, 1010
@@ -366,6 +369,11 @@ class Player:
                 cx, cy = 3670, 860
                 rx, ry = 890, 520
                 rl, rb, rr, rt = 3560, 1260, 3760, 2300
+            elif self.x < 2500:
+                play_mode.MAP = 'spawn_2'
+                cx, cy = 1925, 890
+                rx, ry = 300, 230
+                rl, rb, rr, rt = 2100, 800, 2725, 990
             self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
         elif play_mode.MAP == 'prairie_2':
             if self.y < 1100:
@@ -375,6 +383,7 @@ class Player:
                 rl, rb, rr, rt = 2100, 800, 3025, 990
             elif self.y > 2000:
                 play_mode.MAP = 'lava_1'
+                play_mode.ISLAND = 'lava'
                 cx, cy = 3650, 2570
                 rx, ry = 900, 500
                 rl, rb, rr, rt = 3560, 1260, 3760, 2300
@@ -383,6 +392,7 @@ class Player:
         elif play_mode.MAP == 'lava_1':
             if self.y < 1500:
                 play_mode.MAP = 'prairie_2'
+                play_mode.ISLAND = 'prairie'
                 cx, cy = 3670, 860
                 rx, ry = 890, 520
                 rl, rb, rr, rt = 3560, 1260, 3760, 2300
@@ -392,7 +402,7 @@ class Player:
                 rx, ry = 900, 500
                 rl, rb, rr, rt = 2100, 2450, 3025, 2550
             elif self.y > 2700:
-                play_mode.MAP = 'lave_3'
+                play_mode.MAP = 'lava_3'
                 cx, cy = 3650, 2570
                 rx, ry = 900, 500
                 rl, rb, rr, rt = 3460, 2960, 3660, 3650
@@ -405,11 +415,12 @@ class Player:
                 rl, rb, rr, rt = 3560, 1260, 3760, 2300
             elif self.x < 2300:
                 play_mode.MAP = 'ice_1'
+                play_mode.ISLAND = 'ice'
                 cx, cy = 1200, 2500
                 rx, ry = 900, 520
                 rl, rb, rr, rt = 2000, 2450, 3025, 2550
             self.combined_map_limit(cx, cy, rx, ry, rl, rb, rr, rt)
-        elif play_mode.MAP == 'lave_3':
+        elif play_mode.MAP == 'lava_3':
             if self.y < 2500:
                 play_mode.MAP = 'lava_1'
                 cx, cy = 3650, 2570
@@ -417,6 +428,7 @@ class Player:
                 rl, rb, rr, rt = 3560, 1260, 3760, 2300
             elif self.y > 3200:
                 play_mode.MAP = 'cave_1'
+                play_mode.ISLAND = 'cave'
                 cx, cy = 3500, 4080
                 rx, ry = 1000, 500
                 rl, rb, rr, rt = 3460, 2960, 3660, 3650
@@ -432,7 +444,8 @@ class Player:
 
         elif play_mode.MAP == 'cave_1':
             if self.y < 3500:
-                play_mode.MAP = 'lave_3'
+                play_mode.MAP = 'lava_3'
+                play_mode.ISLAND = 'lava'
                 cx, cy = 3650, 2570
                 rx, ry = 900, 500
                 rl, rb, rr, rt = 3460, 2960, 3660, 3650
@@ -445,6 +458,7 @@ class Player:
         elif play_mode.MAP == 'cave_2':
             if self.x < 2300:
                 play_mode.MAP = 'end_1'
+                play_mode.ISLAND = 'end'
                 cx, cy = 1100, 4050
                 rx, ry = 800, 420
                 rl, rb, rr, rt = 1800, 3950, 3025, 4150
@@ -458,6 +472,7 @@ class Player:
         elif play_mode.MAP == 'end_1':
             if self.x > 2300:
                 play_mode.MAP = 'cave_1'
+                play_mode.ISLAND = 'cave'
                 cx, cy = 3500, 4080
                 rx, ry = 1000, 500
                 rl, rb, rr, rt = 1800, 3950, 3025, 4150

@@ -25,6 +25,7 @@ slimes = None
 P_slimes = None
 
 MAP = 'spawn_1'
+ISLAND = 'spawn'
 
 def handle_events():
     event_list = get_events()
@@ -53,7 +54,7 @@ def init():
     game_world.add_object(back, 0)
 
 
-    slimes = [SLIME() for _ in range(1)]
+    slimes = [SLIME('prairie',3670, 860) for _ in range(2)]
     game_world.add_objects(slimes, 1)
 
     green_slimes = [P_SLIME(1) for _ in range(1)]
