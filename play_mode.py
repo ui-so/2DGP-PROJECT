@@ -57,8 +57,8 @@ def init():
     slimes = [SLIME('prairie',3670, 860) for _ in range(2)]
     game_world.add_objects(slimes, 1)
 
-    green_slimes = [P_SLIME(1) for _ in range(1)]
-    blue_slimes = [P_SLIME(2) for _ in range(1)]
+    green_slimes = [P_SLIME(1) for _ in range(2)]
+    blue_slimes = [P_SLIME(2) for _ in range(2)]
     P_slimes = green_slimes + blue_slimes
     game_world.add_objects(P_slimes, 1)
 

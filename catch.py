@@ -33,7 +33,7 @@ class Catch:
 
     def handle_collision(self, group, other):
         if group == 'slime:catch':
-            if play_mode.MAP == 0:
+            if play_mode.ISLAND == 'prairie' and other.map == 'prairie':
                 S = other.item_id
                 count = 0
                 for i in range(4):
