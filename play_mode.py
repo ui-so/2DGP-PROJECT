@@ -9,6 +9,7 @@ from P_slime import P_SLIME
 import game_world
 import farm_shop
 import shop
+import player as PLAYER
 
 BG_W = 1350
 BG_H = 1350
@@ -38,19 +39,37 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_e:
             global player
-            if MAP == 1:
-                if player.x > 350 and player.x < 400 and player.y > 374 and player.y < 484:
+            if MAP == 'farm':
+                if player.x > 680-80 and player.x < 680+30 and player.y > 1000-110 and player.y < 1000:
                     game_framework.push_mode(farm_shop)
+                    farm_shop.farm_num = 1
+                elif player.x > 835-30 and player.x < 835+80 and player.y > 1000-110 and player.y < 1000:
+                    game_framework.push_mode(farm_shop)
+                    farm_shop.farm_num = 2
+                elif player.x > 636-80 and player.x < 636+30 and player .y > 720-110 and player.y < 720:
+                    game_framework.push_mode(farm_shop)
+                    farm_shop.farm_num = 3
+                elif player.x > 791-30 and player.x < 791+80 and player.y > 720-110 and player.y < 720:
+                    game_framework.push_mode(farm_shop)
+                    farm_shop.farm_num = 4
+
             if MAP == 'spawn_1' or MAP == 'spawn_2':
                 shop_x, shop_y = 1910, 950
+                next_x, next_y = 2250, 850
                 if (shop_x - 50 < player.x < shop_x + 50) and (shop_y - 50 < player.y < shop_y + 50):
                     game_framework.push_mode(shop)
+                elif (next_x - 80 < player.x < next_x + 80) and (next_y - 80 < player.y < next_y + 80):
+                    if PLAYER.gold >= 100:
+                        PLAYER.gold -= 100
+                        BRIDGE[0] = 1
         else:
             player.handle_event(event)
 
 
 def init():
     global player, slimes, P_slimes, back_1, back_2, ui
+    for i in range(5):
+        BRIDGE.append(0)
 
     back = Back()
     game_world.add_object(back, 0)
@@ -171,6 +190,20 @@ def draw():
 
         sx, sy = 1910 - camera_x, 1050 - camera_y
         draw_rectangle(sx - 80, sy - 80, sx + 80, sy + 80)
+
+        sx, sy = 2250 - camera_x, 850 - camera_y
+        draw_rectangle(sx - 80, sy - 80, sx + 80, sy + 80)
+
+    elif MAP == 'farm':
+        sx, sy = 680 - camera_x, 1000 - camera_y
+        draw_rectangle(sx - 80, sy - 110, sx + 30, sy)
+        sx, sy = 835 - camera_x, 1000 - camera_y
+        draw_rectangle(sx - 30, sy - 110, sx + 80, sy)
+        sx, sy = 636 - camera_x, 720 - camera_y
+        draw_rectangle(sx - 80, sy - 110, sx + 30, sy)
+        sx, sy = 791 - camera_x, 720 - camera_y
+        draw_rectangle(sx - 30, sy - 110, sx + 80, sy)
+
     update_canvas()
 
 

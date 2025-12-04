@@ -40,7 +40,7 @@ inventory = [[],[],[],[]]
 inventory_max = 10
 hp_max = 100
 mp_max = 100
-gold = 0
+gold = 1000
 
 cx, cy, rx, ry = 1925, 890, 300, 230
 rl, rb, rr, rt = 1325, 840, 1725, 1010

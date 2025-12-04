@@ -9,9 +9,11 @@ from P_slime import P_SLIME
 
 pannel = None
 select = 1
-Now_slime = []
+farm_slime = [[],[],[],[]]
 
-new_slime = None
+farm_num = 0
+
+new_slime = []
 
 def init():
     global pannel
@@ -21,25 +23,31 @@ def init():
     pass
 
 def finish():
-    global Now_slime, new_slime
-    try:
-        for o in new_slime:
-            try:
-                game_world.remove_object(o)
-            except ValueError:
-                pass
-        new_slime.clear()
-    except (NameError, TypeError):
-        new_slime = []
-    new_slime.clear()
+    global pannel, farm_slime, new_slime
 
-    if Now_slime:
-        if Now_slime[0] == 'P_slime_green':
-            new_slime = [P_SLIME(1,8,400,435,640) for _ in range(Now_slime[1])]
-            game_world.add_objects(new_slime, 1)
-        elif Now_slime[0] == 'P_slime_blue':
-            new_slime = [P_SLIME(2,8,400,435,640) for _ in range(Now_slime[1])]
-            game_world.add_objects(new_slime, 1)
+    if new_slime:
+        for o in new_slime:
+            game_world.remove_object(o)
+
+    new_slime = []
+    for i in range(4):
+        if farm_slime[i]:
+            if i == 0:
+                S_X, S_Y = 400, 1000
+            elif i == 1:
+                S_X, S_Y = 912, 1000
+            elif i == 2:
+                S_X, S_Y = 410, 730
+            elif i == 3:
+                S_X, S_Y = 830, 730
+
+            if farm_slime[i][0] == 'P_slime_green':
+                new_slime += [P_SLIME(1,f'farm_{i+1}',S_X,S_Y) for _ in range(farm_slime[i][1])]
+            elif farm_slime[i][0] == 'P_slime_blue':
+                new_slime += [P_SLIME(2,f'farm_{i+1}',S_X,S_Y) for _ in range(farm_slime[i][1])]
+
+    if new_slime:
+        game_world.add_objects(new_slime, 1)
     game_world.remove_object(pannel)
 
 def update():
@@ -88,27 +96,27 @@ def handle_events():
                 if selected_slot and len(selected_slot) == 2:
                     if selected_slot[1] > 0:
                         item_name = selected_slot[0]
-                        if not Now_slime:
-                            Now_slime = [item_name, 1]
+                        if not farm_slime[farm_num-1]:
+                            farm_slime[farm_num-1] = [item_name, 1]
                             selected_slot[1] -= 1
-                        elif Now_slime[0] == item_name:
-                            Now_slime[1] += 1
+                        elif farm_slime[farm_num-1][0] == item_name:
+                            farm_slime[farm_num-1][1] += 1
                             selected_slot[1] -= 1
 
                         if selected_slot[1] == 0:
                             player.inventory[select - 1] = []
 
             elif x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 105 and y < 768 // 3 - 50:
-                if Now_slime:
-                    item_name = Now_slime[0]
+                if farm_slime[farm_num-1]:
+                    item_name = farm_slime[farm_num-1][0]
                     count = 0
                     for i in range(4):
                         slot = player.inventory[i]
                         if slot and slot[0] == item_name:
                             player.inventory[i][1] += 1
-                            Now_slime[1] -= 1
-                            if Now_slime[1] == 0:
-                                Now_slime = []
+                            farm_slime[farm_num-1][1] -= 1
+                            if farm_slime[farm_num-1][1] == 0:
+                                farm_slime[farm_num-1] = []
                             break
                         else:
                             count += 1
@@ -117,9 +125,9 @@ def handle_events():
                             slot = player.inventory[i]
                             if not slot:
                                 player.inventory[i] = [item_name, 1]
-                                Now_slime[1] -= 1
-                                if Now_slime[1] == 0:
-                                    Now_slime = []
+                                farm_slime[farm_num-1][1] -= 1
+                                if farm_slime[farm_num-1][1] == 0:
+                                    farm_slime[farm_num-1] = []
                                 break
 
 

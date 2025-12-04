@@ -35,13 +35,13 @@ class Pannel:
                     self.Blue_Plort.clip_draw(0, 0, 128, 128, 1024 // 4 + (i*120) - 40, 768 // 3 - 35, 75, 75)
                     self.font.draw(1024 // 4 + (i*120) - 15, 768 // 3-5, f'{count}', (0, 0, 0))
 
-        if farm_shop.Now_slime:
-            if farm_shop.Now_slime[0] == 'P_slime_green':
+        if farm_shop.farm_slime[farm_shop.farm_num-1]:
+            if farm_shop.farm_slime[farm_shop.farm_num-1][0] == 'P_slime_green':
                 self.Green_slime_image.clip_draw(0, 0, 128, 128, 1024 // 4 + 20, 768 // 2 + 250, 250, 250)
-                self.font.draw(1024 // 4, 768 // 2 + 50, f'{farm_shop.Now_slime[1]}', (0, 0, 0))
-            elif farm_shop.Now_slime[0] == 'P_slime_blue':
+                self.font.draw(1024 // 4, 768 // 2 + 50, f'{farm_shop.farm_slime[farm_shop.farm_num-1][1]}', (0, 0, 0))
+            elif farm_shop.farm_slime[farm_shop.farm_num-1][0] == 'P_slime_blue':
                 self.Blue_slime_image.clip_draw(0, 0, 128, 128, 1024 // 4 + 20, 768 // 2 + 250, 250, 250)
-                self.font.draw(1024 // 4, 768 // 2 + 50, f'{farm_shop.Now_slime[1]}', (0, 0, 0))
+                self.font.draw(1024 // 4, 768 // 2 + 50, f'{farm_shop.farm_slime[farm_shop.farm_num-1][1]}', (0, 0, 0))
 
     def update(self):
         pass

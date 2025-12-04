@@ -31,7 +31,8 @@ def check_map_transition(current_map, x, y):
 
     if current_map == 'spawn_1':
         if x < 1525: return 'farm', None
-        elif x > 2000: return 'spawn_2', None
+        if play_mode.BRIDGE[0] == 1:
+            if x > 2000: return 'spawn_2', None
 
     elif current_map == 'spawn_2':
         if x < 1950:

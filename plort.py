@@ -2,6 +2,7 @@ from pico2d import *
 import game_world
 import game_framework
 from game_world import remove_object
+import play_mode
 
 
 class Plort:
@@ -31,14 +32,16 @@ class Plort:
             self.image = None  # 예외 처리
 
     def draw(self):
-        self.image.draw(self.x, self.y, self.size, self.size)
+        sx = self.x - play_mode.camera_x
+        sy = self.y - play_mode.camera_y
+        self.image.draw(sx, sy, self.size, self.size)
         draw_rectangle(*self.get_bb())
 
     def update(self):
         pass
 
     def get_bb(self):
-        return self.x - self.size//2, self.y - self.size//2, self.x + self.size//2, self.y + self.size//2
+        return self.x - self.size//2 - play_mode.camera_x, self.y - self.size//2 - play_mode.camera_y, self.x + self.size//2 - play_mode.camera_x, self.y + self.size//2 - play_mode.camera_y
 
     def handle_collision(self, group, other):
         if group == 'catch:plort':

@@ -1,4 +1,6 @@
 import random
+
+import math
 import game_framework
 import game_world
 import play_mode
@@ -44,7 +46,7 @@ class P_SLIME:
         self.frame = random.randint(0, int(FRAMES_PER_ACTION) - 1)
         self.dir_x = random.choice([-1, 1])
         self.dir_y = random.choice([-1, 1])
-        self.size = 200
+        self.size = 300
         self.draw_w = 100
         self.draw_h = 100
         self.map = map
@@ -59,25 +61,35 @@ class P_SLIME:
         return self.x - play_mode.camera_x - 30, self.y - play_mode.camera_y - 50, self.x - play_mode.camera_x + 30, self.y - play_mode.camera_y - 10
 
     def update(self):
-        if self.map == play_mode.ISLAND:
-            self.change_timer -= game_framework.frame_time
+        import farm_shop
+        self.change_timer -= game_framework.frame_time
 
-            if get_time() - self.plort_timer > 3.0:
+        if self.map == 'farm_1' or self.map == 'farm_2' or self.map == 'farm_3' or self.map == 'farm_4' or self.map == play_mode.MAP:
+            if get_time() - self.plort_timer > 5.0:
                 self.plort_timer = get_time()
                 plort = Plort(self.num, self.x, self.y)
                 game_world.add_object(plort, 1)
                 game_world.add_collision_pair('catch:plort', None, plort)
 
-            if self.change_timer < 0:
-                self.dir_x = random.choice([-1, 1])
-                self.dir_y = random.choice([-1, 1])
-                self.change_timer = random.uniform(1.0, 3.0)
+        if self.change_timer < 0:
+            self.dir_x = random.choice([-1, 1])
+            self.dir_y = random.choice([-1, 1])
+            self.change_timer = random.uniform(1.0, 3.0)
 
-            self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
-            self.x += RUN_SPEED_PPS * self.dir_x * game_framework.frame_time
-            self.y += RUN_SPEED_PPS * self.dir_y * game_framework.frame_time
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
+        self.x += RUN_SPEED_PPS * self.dir_x * game_framework.frame_time
+        self.y += RUN_SPEED_PPS * self.dir_y * game_framework.frame_time
 
-            if self.map == 'prairie':
+        if self.map == 'farm_1':
+            self.constrain_rect(385,960,680,1150)
+        elif self.map == 'farm_2':
+            self.constrain_rect(835,960,1130,1150)
+        elif self.map == 'farm_3':
+            self.constrain_rect(341,680,636,870)
+        elif self.map == 'farm_4':
+            self.constrain_rect(791,680,1086,870)
+
+        elif self.map == 'prairie':
                 self.constrain_to_ellipse(3670, 860, 890, 520)
 
 
@@ -94,7 +106,6 @@ class P_SLIME:
         else:
             self.image.clip_draw(frame_idx, 0, 128, 128, sx, sy, self.draw_w, self.draw_h)
         draw_rectangle(*self.get_bb())
-        draw_rectangle(*self.get_bb())
 
     def constrain_to_ellipse(self, cx, cy, rx, ry):
         dx = self.x - cx
@@ -109,6 +120,23 @@ class P_SLIME:
 
             self.x = cx + dx * scale
             self.y = cy + dy * scale
+
+    def constrain_rect(self, left, bottom, right, top):
+        half_w = 30
+
+        if self.x < left + half_w:
+            self.x = left + half_w
+            self.dir_x *= -1
+        elif self.x > right - half_w:
+            self.x = right - half_w
+            self.dir_x *= -1
+
+        if self.y < bottom + 50:
+            self.y = bottom + 50
+            self.dir_y *= -1
+        elif self.y > top:
+            self.y = top
+            self.dir_y *= -1
 
     def handle_event(self, event):
         pass
