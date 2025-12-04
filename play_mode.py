@@ -27,6 +27,8 @@ P_slimes = None
 MAP = 'spawn_1'
 ISLAND = 'spawn'
 
+BRIDGE = []
+
 def handle_events():
     event_list = get_events()
     for event in event_list:
