@@ -21,20 +21,40 @@ ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 7.0
 
 class SLIME:
-    image = None
+    green_image = None
+    red_image = None
+    blue_image = None
+    black_image = None
 
     def load_images(self):
-        if SLIME.image is None:
-            SLIME.image = load_image('Red_Slime_Run.png')
+        if SLIME.green_image is None:
+            SLIME.green_image = load_image('Green_Monster_Run.png')
+        if SLIME.red_image is None:
+            SLIME.red_image = load_image('Red_Monster_Run.png')
+        if SLIME.blue_image is None:
+            SLIME.blue_image = load_image('Blue_Monster_Run.png')
+        if SLIME.black_image is None:
+            SLIME.black_image = load_image('Black_Monster_Run.png')
 
     def __init__(self, map='prairie', x=3670, y=860):
         self.load_images()
+        if map == 'prairie':
+            self.image = SLIME.green_image
+        elif map == 'lava':
+            self.image = SLIME.red_image
+        elif map == 'ice':
+            self.image = SLIME.blue_image
+        elif map == 'cave':
+            self.image = SLIME.black_image
+        else:
+            self.image = None
+
         self.frame = random.randint(0, int(FRAMES_PER_ACTION) - 1)
         self.dir_x = random.choice([-1, 1])
         self.dir_y = random.choice([-1, 1])
         self.size = 200
-        self.draw_w = 100
-        self.draw_h = 100
+        self.draw_w = 150
+        self.draw_h = 150
         self.x = random.randint(x - self.size // 2, x + self.size // 2)
         self.y = random.randint(y - self.size // 2, y + self.size // 2)
         self.map = map
@@ -61,12 +81,18 @@ class SLIME:
 
             if self.map == 'prairie':
                 self.constrain_to_ellipse(3670, 860, 890, 520)
+            elif self.map == 'lava':
+                self.constrain_to_ellipse(3650, 2570, 900, 500)
+            elif self.map == 'ice':
+                self.constrain_to_ellipse(1200, 2500, 900, 520)
+            elif self.map == 'cave':
+                self.constrain_to_ellipse(3500, 4080, 1000, 500)
 
             if self.x + 100 >= play_mode.player.x - 50 and self.x - 100 <= play_mode.player.x + 40 and self.y + 70 >= play_mode.player.y - 50 and self.y - 120 <= play_mode.player.y + 40:
                 self.attack()
 
     def draw(self):
-        if SLIME.image is None:
+        if self.image is None:
             return
 
         sx = self.x - play_mode.camera_x
@@ -74,9 +100,9 @@ class SLIME:
 
         frame_idx = int(self.frame) * 128
         if self.dir_x < 0:
-            SLIME.image.clip_composite_draw(frame_idx, 0, 128, 128, 0, 'h', sx, sy, self.draw_w, self.draw_h)
+            self.image.clip_composite_draw(frame_idx, 0, 128, 128, 0, 'h', sx, sy, self.draw_w, self.draw_h)
         else:
-            SLIME.image.clip_draw(frame_idx, 0, 128, 128, sx, sy, self.draw_w, self.draw_h)
+            self.image.clip_draw(frame_idx, 0, 128, 128, sx, sy, self.draw_w, self.draw_h)
         draw_rectangle(*self.get_bb())
         draw_rectangle(sx - 100, sy - 120, sx + 100, sy+70)
 

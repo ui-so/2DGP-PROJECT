@@ -31,6 +31,7 @@ ISLAND = 'spawn'
 BRIDGE = []
 
 slime_respawn = [[],[],[],[]]
+P_slime_respawn = [[],[],[],[]]
 
 def handle_events():
     event_list = get_events()
@@ -69,7 +70,7 @@ def handle_events():
 
 
 def init():
-    global player, slimes, P_slimes, back_1, back_2, ui
+    global player, slimes, P_slimes, ui
     for i in range(5):
         BRIDGE.append(0)
 
@@ -77,7 +78,11 @@ def init():
     game_world.add_object(back, 0)
 
 
-    slimes = [SLIME('prairie',3670, 860) for _ in range(2)]
+    G_slimes = [SLIME('prairie',3670, 860) for _ in range(10)]
+    R_slimes = [SLIME('lava', 3650, 2570) for _ in range(10)]
+    B_slimes = [SLIME('ice', 1200, 2570) for _ in range(10)]
+    Bl_slimes = [SLIME('cave', 3500, 4080) for _ in range(10)]
+    slimes = G_slimes + R_slimes + B_slimes + Bl_slimes
     game_world.add_objects(slimes, 1)
 
     green_slimes = [P_SLIME(1, 'prairie',3670, 860) for _ in range(10)]
@@ -86,8 +91,12 @@ def init():
     black_slimes = [P_SLIME(4, 'cave', 3500, 4080) for _ in range(10)]
     P_slimes = green_slimes + red_slimes + blue_slimes + black_slimes
     game_world.add_objects(P_slimes, 1)
-    for i in range(10):
-        slime_respawn[0].append(-1)
+
+    for i in range(4):
+        for _ in range(10):
+            slime_respawn[i].append(-1)
+            P_slime_respawn[i].append(-1)
+
 
     player = Player()
     game_world.add_object(player, 1)
@@ -116,14 +125,21 @@ def update():
 
     game_world.update()
 
-    for i in range(10):
-        if slime_respawn[0][i] != -1:
-            if get_time() - slime_respawn[0][i] > 10.0:
-                new_slime = P_SLIME(1)
-                game_world.add_object(new_slime, 1)
-                game_world.add_collision_pair('slime:catch', new_slime, None)
-                P_slimes.append(new_slime)
-                slime_respawn[0][i] = -1
+    for i in range(4):
+        for j in range(10):
+            if P_slime_respawn[i][j] != -1:
+                if get_time() - P_slime_respawn[i][j] > 10.0:
+                    new_slime = P_SLIME(i+1, ISLAND, 0, 0)
+                    game_world.add_object(new_slime, 1)
+                    game_world.add_collision_pair('slime:catch', new_slime, None)
+                    P_slimes.append(new_slime)
+                    P_slime_respawn[i][j] = -1
+                if get_time() - slime_respawn[i][j] > 10.0:
+                    new_slime = SLIME(i+1, ISLAND, 0, 0)
+                    game_world.add_object(new_slime, 1)
+                    game_world.add_collision_pair('slime:catch', new_slime, None)
+                    slimes.append(new_slime)
+                    slime_respawn[i][j] = -1
 
 
     game_world.handle_collisions()

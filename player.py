@@ -274,6 +274,7 @@ class Death:
         for i in range(4):
             inventory[i] = []
         self.player.hp = 100
+        self.player.x, self.player.y = 1925, 870
 
     def do(self):
         self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 0.5)
