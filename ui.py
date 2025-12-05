@@ -20,6 +20,7 @@ class Ui:
         pass
 
     def draw(self):
+        self.image.draw(1024 // 2, 768 // 4, 512, 382)
         for i in range(4):
             if player.inventory[i]:
 
@@ -39,9 +40,17 @@ class Ui:
                     self.Blue_Plort.clip_draw(0, 0, 32, 32, 1024 // 2 + (i*70)-5, 768 // 6 - 80, 50, 50)
                     self.font.draw(1024 // 2 + (i*70) + 5, 768 // 6 - 40 - 20, f'{count}', (0, 0, 0))
 
-        self.font.draw(1024 // 2 - 100, 768 // 6 - 40, f'{player.gold}', (0, 0, 0))
-        self.image.draw(1024 // 2, 768 // 4, 512, 382)
-        hp = play_mode.player.hp
-        self.HP.clip_draw(0,0, hp*2, 10, 1024//2 - 150, 768//6-100)
-        mp = play_mode.player.mp
-        self.MP.clip_draw(0,0, mp*2, 10, 1024//2 - 150, 768//6-70)
+        self.font.draw(1024 // 2 - 100, 768 // 6 - 58, f'{player.gold}', (0, 0, 0))
+
+        FIXED_BAR_WIDTH = 200
+
+        ratio = play_mode.player.hp / player.hp_max
+        current_bar_width = FIXED_BAR_WIDTH * ratio
+        right_anchor = (1024 // 2 - 151) + (FIXED_BAR_WIDTH / 2)
+        draw_x = right_anchor - (current_bar_width / 2)
+        self.HP.clip_draw(0,0, int(200 * ratio), 10, draw_x, 768//6-100,current_bar_width, 10)
+        ratio = play_mode.player.mp / player.mp_max
+        current_bar_width = FIXED_BAR_WIDTH * ratio
+        right_anchor = (1024 // 2 - 151) + (FIXED_BAR_WIDTH / 2)
+        draw_x = right_anchor - (current_bar_width / 2)
+        self.MP.clip_draw(0,0, int(200 * ratio), 10, draw_x, 768//6-80,current_bar_width, 10)
