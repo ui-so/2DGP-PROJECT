@@ -303,6 +303,9 @@ class Player:
         self.hp = 100
         self.mp = 100
 
+        self.heal_hp_time = get_time()
+        self.heal_mp_time = get_time()
+
         self.RUN = Run(self)
         self.IDLE = Idle(self)
         self.Hurt = Hurt(self)
@@ -337,6 +340,14 @@ class Player:
             obstacle_list = map_limit.MAP_OBSTACLES[play_mode.MAP]
             for obs_data in obstacle_list:
                 self.rectangle_obstacle(*obs_data)
+
+        if self.hp < hp_max and get_time() - self.heal_hp_time > 5.0:
+            self.hp += 5
+            self.heal_hp_time = get_time()
+        if self.mp < mp_max and get_time() - self.heal_mp_time > 5.0:
+            self.mp += 5
+            self.heal_mp_time = get_time()
+
 
     def draw(self):
         self.state_machine.draw()

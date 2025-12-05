@@ -30,6 +30,8 @@ ISLAND = 'spawn'
 
 BRIDGE = []
 
+slime_respawn = [[],[],[],[]]
+
 def handle_events():
     event_list = get_events()
     for event in event_list:
@@ -78,10 +80,14 @@ def init():
     slimes = [SLIME('prairie',3670, 860) for _ in range(2)]
     game_world.add_objects(slimes, 1)
 
-    green_slimes = [P_SLIME(1) for _ in range(2)]
-    blue_slimes = [P_SLIME(2) for _ in range(2)]
-    P_slimes = green_slimes + blue_slimes
+    green_slimes = [P_SLIME(1, 'prairie',3670, 860) for _ in range(10)]
+    red_slimes = [P_SLIME(2, 'lava', 3650, 2570) for _ in range(10)]
+    blue_slimes = [P_SLIME(3, 'ice', 1200, 2570) for _ in range(10)]
+    black_slimes = [P_SLIME(4, 'cave', 3500, 4080) for _ in range(10)]
+    P_slimes = green_slimes + red_slimes + blue_slimes + black_slimes
     game_world.add_objects(P_slimes, 1)
+    for i in range(10):
+        slime_respawn[0].append(-1)
 
     player = Player()
     game_world.add_object(player, 1)
@@ -109,74 +115,16 @@ def update():
     camera_y = max(0, min(camera_y, MAP_HEIGHT - 768))
 
     game_world.update()
-    if MAP == 0:
-        if player.x < 100 and player.y < 434 and player.y > 334:
-            back_1.x = 0
-            back_1.y = 0
-            back_2.x = 0
-            back_2.y = 0
-            player.x = 512
-            player.y = 384
 
-            for o in slimes:
-                try:
-                    game_world.remove_object(o)
-                except ValueError:
-                    pass
-            slimes.clear()
+    for i in range(10):
+        if slime_respawn[0][i] != -1:
+            if get_time() - slime_respawn[0][i] > 10.0:
+                new_slime = P_SLIME(1)
+                game_world.add_object(new_slime, 1)
+                game_world.add_collision_pair('slime:catch', new_slime, None)
+                P_slimes.append(new_slime)
+                slime_respawn[0][i] = -1
 
-            for o in P_slimes:
-                try:
-                    game_world.remove_object(o)
-                except ValueError:
-                    pass
-            P_slimes.clear()
-
-            if farm_shop.Now_slime:
-                if farm_shop.Now_slime[0] == 'P_slime_green':
-                    farm_shop.new_slime = [P_SLIME(1, 8, 400, 435, 640) for _ in range(farm_shop.Now_slime[1])]
-                    game_world.add_objects(farm_shop.new_slime, 1)
-                elif farm_shop.Now_slime[0] == 'P_slime_blue':
-                    farm_shop.new_slime = [P_SLIME(2, 8, 400, 435, 640) for _ in range(farm_shop.Now_slime[1])]
-                    game_world.add_objects(farm_shop.new_slime, 1)
-            MAP = 1
-
-    elif MAP == 1:
-        if player.x > 924 and player.x < 1024 and player.y < 434 and player.y > 334:
-            back_1.x = 256
-            back_1.y = 0
-            back_2.x = 256
-            back_2.y = 0
-            player.x = 512
-            player.y = 384
-            try:
-                for o in farm_shop.new_slime:
-                    try:
-                        game_world.remove_object(o)
-                    except ValueError:
-                        pass
-                farm_shop.new_slime.clear()
-            except (NameError, TypeError):
-                farm_shop.new_slime = []
-            farm_shop.new_slime.clear()
-
-            slimes = [SLIME() for _ in range(5)]
-            game_world.add_objects(slimes, 1)
-            green_slimes = [P_SLIME(1) for _ in range(3)]
-            blue_slimes = [P_SLIME(2) for _ in range(3)]
-            P_slimes = green_slimes + blue_slimes
-            game_world.add_objects(P_slimes, 1)
-
-            for slime in P_slimes:
-                game_world.add_collision_pair('slime:catch', slime, None)
-
-            game_world.add_collision_pair('player:slime', player, None)
-            for slime in slimes:
-                game_world.add_collision_pair('player:slime', None, slime)
-                game_world.add_collision_pair('slime:attack', slime, None)
-
-
-            MAP = 0
 
     game_world.handle_collisions()
 

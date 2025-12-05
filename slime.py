@@ -3,6 +3,7 @@ import game_framework
 import game_world
 import play_mode
 from slime_attack import Slime_Attack
+import player
 
 from pico2d import *
 import math
@@ -107,4 +108,5 @@ class SLIME:
         if group == 'slime:attack':
             print("Slime Hit!")
             game_world.remove_object(self)
+            player.gold += 10
         pass

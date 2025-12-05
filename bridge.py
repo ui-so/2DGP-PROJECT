@@ -1,8 +1,8 @@
 from pico2d import load_image
 
-class Back2:
+class Bridge:
     def __init__(self):
-        self.image = load_image('Back_2.png')
+        # self.image = load_image('Back_1.png')
         self.x = 256
         self.y = 0
 

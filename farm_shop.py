@@ -43,8 +43,12 @@ def finish():
 
             if farm_slime[i][0] == 'P_slime_green':
                 new_slime += [P_SLIME(1,f'farm_{i+1}',S_X,S_Y) for _ in range(farm_slime[i][1])]
-            elif farm_slime[i][0] == 'P_slime_blue':
+            elif farm_slime[i][0] == 'P_slime_red':
                 new_slime += [P_SLIME(2,f'farm_{i+1}',S_X,S_Y) for _ in range(farm_slime[i][1])]
+            elif farm_slime[i][0] == 'P_slime_blue':
+                new_slime += [P_SLIME(3,f'farm_{i+1}',S_X,S_Y) for _ in range(farm_slime[i][1])]
+            elif farm_slime[i][0] == 'P_slime_black':
+                new_slime += [P_SLIME(4,f'farm_{i+1}',S_X,S_Y) for _ in range(farm_slime[i][1])]
 
     if new_slime:
         game_world.add_objects(new_slime, 1)

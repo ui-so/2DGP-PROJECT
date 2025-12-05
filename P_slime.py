@@ -24,13 +24,19 @@ FRAMES_PER_ACTION = 7.0
 
 class P_SLIME:
     green_image = None
+    red_image = None
     blue_image = None
+    black_image = None
 
     def load_images(self):
         if P_SLIME.green_image is None:
             P_SLIME.green_image = load_image('Green_Slime_Run.png')
+        if P_SLIME.red_image is None:
+            P_SLIME.red_image = load_image('Red_Slime_Run.png')
         if P_SLIME.blue_image is None:
             P_SLIME.blue_image = load_image('Blue_Slime_Run.png')
+        if P_SLIME.black_image is None:
+            P_SLIME.black_image = load_image('Black_Slime_Run.png')
 
     def __init__(self, num=1, map='prairie', x=3670, y=860):
         self.num = num
@@ -39,10 +45,17 @@ class P_SLIME:
             self.image = P_SLIME.green_image
             self.item_id = 'P_slime_green'  # 인벤토리용
         elif self.num == 2:
+            self.image = P_SLIME.red_image
+            self.item_id = 'P_slime_red'  # 인벤토리용
+        elif self.num == 3:
             self.image = P_SLIME.blue_image
             self.item_id = 'P_slime_blue'  # 인벤토리용
+        elif self.num == 4:
+            self.image = P_SLIME.black_image
+            self.item_id = 'P_slime_black'
         else:
             self.image = None  # 예외 처리
+
         self.frame = random.randint(0, int(FRAMES_PER_ACTION) - 1)
         self.dir_x = random.choice([-1, 1])
         self.dir_y = random.choice([-1, 1])
@@ -64,8 +77,8 @@ class P_SLIME:
         import farm_shop
         self.change_timer -= game_framework.frame_time
 
-        if self.map == 'farm_1' or self.map == 'farm_2' or self.map == 'farm_3' or self.map == 'farm_4' or self.map == play_mode.MAP:
-            if get_time() - self.plort_timer > 5.0:
+        if self.map == 'farm_1' or self.map == 'farm_2' or self.map == 'farm_3' or self.map == 'farm_4' or self.map == play_mode.ISLAND:
+            if get_time() - self.plort_timer > 10.0:
                 self.plort_timer = get_time()
                 plort = Plort(self.num, self.x, self.y)
                 game_world.add_object(plort, 1)
@@ -91,6 +104,12 @@ class P_SLIME:
 
         elif self.map == 'prairie':
                 self.constrain_to_ellipse(3670, 860, 890, 520)
+        elif self.map == 'lava':
+                self.constrain_to_ellipse(3650, 2570, 900, 500)
+        elif self.map == 'ice':
+                self.constrain_to_ellipse(1200, 2500, 900, 520)
+        elif self.map == 'cave':
+                self.constrain_to_ellipse(3500, 4080, 1000, 500)
 
 
     def draw(self):
@@ -145,4 +164,8 @@ class P_SLIME:
         if group == 'slime:catch':
             print("Slime catch!")
             game_world.remove_object(self)
+            for i in range(10):
+                if play_mode.slime_respawn[0][i] == -1:
+                    play_mode.slime_respawn[0][i] = get_time()
+                    break
         pass
