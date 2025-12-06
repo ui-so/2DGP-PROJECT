@@ -19,8 +19,9 @@ class Pannel:
 
     def draw(self):
         self.image.draw(1024//2, 768//2, 768, 576)
-        self.font.draw(1024 // 4 + (4 * 120) - 60, 768 // 3,'PUT', (0, 0, 0))
-        self.font.draw(1024 // 4 + (4 * 120) - 50, 768 // 3 - 75, 'TAKE OUT', (0, 0, 0))
+        self.font.draw(1024 // 4 + (4 * 120) - 58, 768 // 3,'PUT', (0, 0, 0))
+        self.font.draw(1024 // 4 + (4 * 120) - 77, 768 // 3 - 75, 'TAKE OUT', (0, 0, 0))
+        self.font.draw(1024 // 4 + (4 * 120) - 101, 768 // 3 + 160, 'TAKE OUT', (0, 0, 0))
         count = 0
         for i in range(4):
             if player.inventory[i]:

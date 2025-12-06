@@ -67,9 +67,17 @@ class ShopPannel:
 
             elif self.Page == 1:
                 self.shop_image_2.draw(1024 // 2, 768 // 2, 768, 576)
-                self.font.draw(1024 // 4 + 10, 768 // 2 - 90, f'-{shop.shop_gold[0]}', (0, 0, 0))
-                self.font.draw(1024 // 4 + 250, 768 // 2 - 90, f'-{shop.shop_gold[1]}', (0, 0, 0))
-                self.font.draw(1024 // 4 + 480, 768 // 2 - 90, f'-{shop.shop_gold[2]}', (0, 0, 0))
-
+                if shop.shop_count[0] < 10:
+                    self.font.draw(1024 // 4 + 10, 768 // 2 - 90, f'-{shop.shop_gold[0]}', (0, 0, 0))
+                else:
+                    self.font.draw(1024 // 4 + 10, 768 // 2 - 90, 'MAX', (0, 0, 0))
+                if shop.shop_count[1] < 10:
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 90, f'-{shop.shop_gold[1]}', (0, 0, 0))
+                else:
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 90, 'MAX', (0, 0, 0))
+                if shop.shop_count[2] < 5:
+                    self.font.draw(1024 // 4 + 480, 768 // 2 - 90, f'-{shop.shop_gold[2]}', (0, 0, 0))
+                else:
+                    self.font.draw(1024 // 4 + 480, 768 // 2 - 90, 'MAX', (0, 0, 0))
     def update(self):
         pass

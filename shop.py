@@ -85,12 +85,10 @@ def handle_events():
                     selected_slot = player.inventory[select - 1]
                     if selected_slot and len(selected_slot) == 2:
                         if selected_slot[1] > 0:
-                            item_name = selected_slot[0]
-                            Now_slime = P_SLIME(item_name, player.x, player.y + 50)
-                            game_world.add_object(Now_slime, 1)
                             selected_slot[1] -= 1
-                            if selected_slot[1] <= 0:
-                                player.inventory[select-1] = []
+                            if selected_slot[1] == 0:
+                                player.inventory[select - 1] = []
+
 
                 elif x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 60 and y < 768 // 3 - 10:
                     selected_slot = player.inventory[select - 1]

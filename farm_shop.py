@@ -121,6 +121,8 @@ def draw():
 
     draw_rectangle(1024 // 4 + (4 * 120) - 80, 768 // 3 - 30, 1024 // 4 + (4 * 120)+5, 768 // 3+30)
     draw_rectangle(1024 // 4 + (4 * 120) - 80, 768 // 3 - 105, 1024 // 4 + (4 * 120) + 5, 768 // 3 - 50)
+
+    draw_rectangle(1024 // 4 + (4 * 120) - 105, 768 // 3 + 130, 1024 // 4 + (4 * 120)-20, 768 // 3 + 190)
     update_canvas()
 
 
@@ -172,10 +174,11 @@ def handle_events():
                     for i in range(4):
                         slot = player.inventory[i]
                         if slot and slot[0] == item_name:
-                            player.inventory[i][1] += 1
-                            farm_slime[farm_num-1][1] -= 1
-                            if farm_slime[farm_num-1][1] == 0:
-                                farm_slime[farm_num-1] = []
+                            if player.inventory[i][1] < player.inventory_max:
+                                player.inventory[i][1] += 1
+                                farm_slime[farm_num-1][1] -= 1
+                                if farm_slime[farm_num-1][1] == 0:
+                                    farm_slime[farm_num-1] = []
                             break
                         else:
                             count += 1
@@ -189,6 +192,30 @@ def handle_events():
                                     farm_slime[farm_num-1] = []
                                 break
 
+            elif x > 1024 // 4 + (4 * 120) - 105 and x < 1024 // 4 + (4 * 120)-20 and y > 768 // 3 + 130 and y < 768 // 3 + 190:
+                if play_mode.farm_plort[farm_num-1]:
+                    item_name = play_mode.farm_plort[farm_num-1][0]
+                    count = 0
+                    for i in range(4):
+                        slot = player.inventory[i]
+                        if slot and slot[0] == item_name:
+                            if player.inventory[i][1] < player.inventory_max:
+                                player.inventory[i][1] += 1
+                                play_mode.farm_plort[farm_num-1][1] -= 1
+                                if play_mode.farm_plort[farm_num-1][1] == 0:
+                                    play_mode.farm_plort[farm_num-1] = []
+                            break
+                        else:
+                            count += 1
+                    if count == 4:
+                        for i in range(4):
+                            slot = player.inventory[i]
+                            if not slot:
+                                player.inventory[i] = [item_name, 1]
+                                play_mode.farm_plort[farm_num-1][1] -= 1
+                                if play_mode.farm_plort[farm_num-1][1] == 0:
+                                    play_mode.farm_plort[farm_num-1] = []
+                                break
 
 def pause():
     pass

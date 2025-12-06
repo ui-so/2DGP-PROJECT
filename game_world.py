@@ -20,7 +20,7 @@ def remove_object(o):
             remove_collision_dbject(o)
             return
 
-    raise ValueError('Cannot delete non existing object')
+    pass
 
 
 def update():

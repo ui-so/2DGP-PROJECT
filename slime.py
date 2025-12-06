@@ -135,6 +135,7 @@ class SLIME:
         if group == 'slime:attack':
             print("Slime Hit!")
             game_world.remove_object(self)
+
             if self.map == 'prairie':
                 player.gold += 10
                 key_num = 1
@@ -153,5 +154,7 @@ class SLIME:
                 game_world.add_object(key, 1)
                 game_world.add_collision_pair('player:key', None, key)
 
-
-        pass
+            for i in range(10):
+                if play_mode.slime_respawn[key_num-1][i] == -1:
+                    play_mode.slime_respawn[key_num-1][i] = get_time()
+                    break

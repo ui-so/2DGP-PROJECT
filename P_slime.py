@@ -1,6 +1,8 @@
 import random
 
 import math
+
+import catch
 import game_framework
 import game_world
 import play_mode
@@ -163,9 +165,10 @@ class P_SLIME:
     def handle_collision(self, group, other):
         if group == 'slime:catch':
             print("Slime catch!")
-            game_world.remove_object(self)
-            for i in range(10):
-                if play_mode.slime_respawn[0][i] == -1:
-                    play_mode.slime_respawn[0][i] = get_time()
-                    break
-        pass
+            if catch.catch == 1:
+                game_world.remove_object(self)
+                for i in range(10):
+                    if play_mode.P_slime_respawn[self.num-1][i] == -1:
+                        play_mode.P_slime_respawn[self.num-1][i] = get_time()
+                        break
+                catch.catch = 0
