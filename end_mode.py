@@ -5,13 +5,18 @@ import play_mode
 
 
 def init():
-    global image
+    global image, bgm
     image = load_image('end.png')
+
+    bgm = load_music('end_bgm.mp3')
+    bgm.set_volume(32)
+    bgm.repeat_play()
 
 
 def finish():
-    global image
+    global image, bgm
     del image
+    del bgm
 
 def update():
     pass

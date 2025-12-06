@@ -121,9 +121,13 @@ def handle_events():
 
 
 def init():
-    global player, slimes, P_slimes, ui, font
+    global player, slimes, P_slimes, ui, font, bgm
 
     font = load_font('ENCR10B.TTF', 16)
+
+    bgm = load_music('play_bgm.mp3')
+    bgm.set_volume(32)
+    bgm.repeat_play()
 
     for i in range(5):
         BRIDGE.append(0)
@@ -277,6 +281,8 @@ def draw():
 
 def finish():
     game_world.clear()
+    global bgm
+    del bgm
     pass
 
 

@@ -5,14 +5,18 @@ import play_mode
 
 
 def init():
-    global image
-    # 이미지는 init에서 로드해야 합니다.
+    global image, bgm
     image = load_image('start.png')
+
+    bgm = load_music('start_bgm.mp3')
+    bgm.set_volume(32)
+    bgm.repeat_play()
 
 
 def finish():
-    global image
+    global image, bgm
     del image
+    del bgm
 
 
 def update():
@@ -22,12 +26,9 @@ def update():
 def draw():
     clear_canvas()
 
-    # 1. 화면(캔버스)의 너비와 높이를 가져옵니다.
     cw = get_canvas_width()
     ch = get_canvas_height()
 
-    # 2. 이미지를 화면 중앙(cw // 2, ch // 2)에 그립니다.
-    # 3. 뒤의 cw, ch는 이미지를 화면 크기에 딱 맞게 늘려서(resize) 그리라는 뜻입니다.
     image.draw(cw // 2, ch // 2, cw, ch)
     update_canvas()
 
@@ -44,7 +45,6 @@ def handle_events():
 
 def pause():
     pass
-
 
 def resume():
     pass
