@@ -37,7 +37,7 @@ def check_map_transition(current_map, x, y):
     elif current_map == 'spawn_2':
         if x < 1950:
             return 'spawn_1', None
-        elif x > 2500:
+        if x > 2500:
             return 'prairie_1', 'prairie'
 
     elif current_map == 'farm':
@@ -46,13 +46,13 @@ def check_map_transition(current_map, x, y):
     elif current_map == 'prairie_1':
         if play_mode.BRIDGE[1] == 1:
             if y > 1100: return 'prairie_2', None
-        elif x < 2500:
+        if x < 2500:
             return 'spawn_2', None
 
     elif current_map == 'prairie_2':
         if y < 1100:
             return 'prairie_1', None
-        elif y > 2000:
+        if y > 2000:
             return 'lava_1', 'lava'
 
     elif current_map == 'lava_1':
@@ -68,13 +68,13 @@ def check_map_transition(current_map, x, y):
     elif current_map == 'lava_2':
         if x > 3000:
             return 'lava_1', None
-        elif x < 2300:
+        if x < 2300:
             return 'ice_1', 'ice'
 
     elif current_map == 'lava_3':
         if y < 2500:
             return 'lava_1', None
-        elif y > 3200:
+        if y > 3200:
             return 'cave_1', 'cave'
 
     elif current_map == 'ice_1':
@@ -90,7 +90,7 @@ def check_map_transition(current_map, x, y):
     elif current_map == 'cave_2':
         if x < 2300:
             return 'end_1', 'end'
-        elif y < 3800:
+        if y < 3800:
             return 'cave_1', None
 
     elif current_map == 'end_1':

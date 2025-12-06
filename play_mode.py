@@ -1,3 +1,4 @@
+import end_mode
 import game_framework
 from pico2d import *
 
@@ -109,6 +110,12 @@ def handle_events():
                         BRIDGE[4] = 1
                         bridge = Bridge(5)
                         game_world.add_object(bridge,0)
+
+            elif MAP == 'end_1':
+                home_x , home_y = 1050, 4000
+                if (home_x - 50 < player.x < home_x + 50) and (home_y - 50 < player.y < home_y + 50):
+                    if KEY[0] == 1 and KEY[1] == 1 and KEY[2] == 1 and KEY[3] == 1:
+                        game_framework.push_mode(end_mode)
         else:
             player.handle_event(event)
 
@@ -181,15 +188,17 @@ def update():
         for j in range(10):
             if P_slime_respawn[i][j] != -1:
                 if get_time() - P_slime_respawn[i][j] > 10.0:
-                    new_slime = P_SLIME(i+1, ISLAND, 0, 0)
+                    new_slime = P_SLIME(i+1, ISLAND, 2000, 2000)
                     game_world.add_object(new_slime, 1)
                     game_world.add_collision_pair('slime:catch', new_slime, None)
                     P_slimes.append(new_slime)
                     P_slime_respawn[i][j] = -1
+            if slime_respawn[i][j] != -1:
                 if get_time() - slime_respawn[i][j] > 10.0:
-                    new_slime = SLIME(i+1, ISLAND, 0, 0)
+                    new_slime = SLIME(ISLAND, 2000, 2000)
                     game_world.add_object(new_slime, 1)
-                    game_world.add_collision_pair('slime:catch', new_slime, None)
+                    game_world.add_collision_pair('slime:attack', new_slime, None)
+                    game_world.add_collision_pair('player:slime', None, new_slime)
                     slimes.append(new_slime)
                     slime_respawn[i][j] = -1
 
@@ -258,6 +267,10 @@ def draw():
         draw_rectangle(sx - 80, sy - 110, sx + 30, sy)
         sx, sy = 791 - camera_x, 720 - camera_y
         draw_rectangle(sx - 30, sy - 110, sx + 80, sy)
+
+    elif MAP == 'end_1':
+        sx, sy = 1050 - camera_x, 4000 - camera_y
+        draw_rectangle(sx - 50, sy - 50, sx + 50, sy + 50)
 
     update_canvas()
 
