@@ -157,17 +157,18 @@ def handle_events():
             if x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 30 and y < 768 // 3 + 30:
                 selected_slot = player.inventory[select - 1]
                 if selected_slot and len(selected_slot) == 2:
-                    if selected_slot[1] > 0:
-                        item_name = selected_slot[0]
-                        if not farm_slime[farm_num-1]:
-                            farm_slime[farm_num-1] = [item_name, 1]
-                            selected_slot[1] -= 1
-                        elif farm_slime[farm_num-1][0] == item_name:
-                            farm_slime[farm_num-1][1] += 1
-                            selected_slot[1] -= 1
+                    if selected_slot[0] == 'P_slime_green' or selected_slot[0] == 'P_slime_red' or selected_slot[0] == 'P_slime_blue' or selected_slot[0] == 'P_slime_black':
+                        if selected_slot[1] > 0:
+                            item_name = selected_slot[0]
+                            if not farm_slime[farm_num-1]:
+                                farm_slime[farm_num-1] = [item_name, 1]
+                                selected_slot[1] -= 1
+                            elif farm_slime[farm_num-1][0] == item_name:
+                                farm_slime[farm_num-1][1] += 1
+                                selected_slot[1] -= 1
 
-                        if selected_slot[1] == 0:
-                            player.inventory[select - 1] = []
+                            if selected_slot[1] == 0:
+                                player.inventory[select - 1] = []
 
             elif x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 105 and y < 768 // 3 - 50:
                 if farm_slime[farm_num-1]:

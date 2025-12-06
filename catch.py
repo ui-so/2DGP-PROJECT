@@ -36,27 +36,25 @@ class Catch:
     def handle_collision(self, group, other):
         global catch
         if group == 'slime:catch':
-            if play_mode.ISLAND != 'farm':
+            if play_mode.ISLAND != 'farm' and catch != 1:
                 S = other.item_id
                 count = 0
                 for i in range(4):
                     slot = player.inventory[i]
                     if slot and slot[0] == S:
-                        if player.inventory[i][1] < player.inventory_max:
+                        if player.inventory[i][1] < player.inventory_max and catch != 1:
                             player.inventory[i][1] += 1
                             catch = 1
+                            game_world.remove_object(other)
                             break
                     else:
                         count += 1
                 if count == 4:
                     for i in range(4):
-                        if not player.inventory[i]:
+                        if not player.inventory[i] and catch != 1:
                             player.inventory[i] = [S, 1]
                             catch = 1
-                            break
-                        elif player.inventory[i][0] == S:
-                            player.inventory[i][1] += 1
-                            catch = 1
+                            game_world.remove_object(other)
                             break
 
         elif group == 'catch:plort':

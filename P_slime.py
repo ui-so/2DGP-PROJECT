@@ -166,9 +166,8 @@ class P_SLIME:
         if group == 'slime:catch':
             print("Slime catch!")
             if catch.catch == 1:
-                game_world.remove_object(self)
+                catch.catch = 0
                 for i in range(10):
                     if play_mode.P_slime_respawn[self.num-1][i] == -1:
                         play_mode.P_slime_respawn[self.num-1][i] = get_time()
                         break
-                catch.catch = 0
