@@ -18,8 +18,8 @@ MAP_LIMITS = {
 }
 
 MAP_OBSTACLES = {
-    'spawn_1': [(1810, 970, 2010, 1130)],   # 1910, 1050 기준 +- 100, 80
-    'spawn_2': [(1810, 970, 2010, 1130)],
+    'spawn_1': [(1710, 1000, 2110, 1130)],   # 1910, 1050 기준 +- 100, 80
+    'spawn_2': [(1710, 1000, 2110, 1130)],
     'farm': [(835-30, 960+40, 1130+30, 1150+50),(385-30, 960+40, 680+30, 1150+50),
              (791-30, 680+40, 1086+30, 870+50),(341-30, 680+40, 636+30, 870+50)],
 }
@@ -44,8 +44,8 @@ def check_map_transition(current_map, x, y):
         if x > 1525: return 'spawn_1', 'spawn'
 
     elif current_map == 'prairie_1':
-        if y > 1100:
-            return 'prairie_2', None
+        if play_mode.BRIDGE[1] == 1:
+            if y > 1100: return 'prairie_2', None
         elif x < 2500:
             return 'spawn_2', None
 
@@ -58,10 +58,12 @@ def check_map_transition(current_map, x, y):
     elif current_map == 'lava_1':
         if y < 1500:
             return 'prairie_2', 'prairie'
-        elif x < 3000:
-            return 'lava_2', None
-        elif y > 2700:
-            return 'lava_3', None
+        if play_mode.BRIDGE[2] == 1:
+            if x < 3000:
+                return 'lava_2', None
+        if play_mode.BRIDGE[3] == 1:
+            if y > 2700:
+                return 'lava_3', None
 
     elif current_map == 'lava_2':
         if x > 3000:
@@ -81,8 +83,9 @@ def check_map_transition(current_map, x, y):
     elif current_map == 'cave_1':
         if y < 3500:
             return 'lava_3', 'lava'
-        elif x < 2600:
-            return 'cave_2', None
+        if play_mode.BRIDGE[4] == 1:
+            if x < 2600:
+                return 'cave_2', None
 
     elif current_map == 'cave_2':
         if x < 2300:

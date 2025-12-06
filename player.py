@@ -17,7 +17,7 @@ from catch import Catch
 
 # Player Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 40.0  # Km / Hour
+RUN_SPEED_KMPH = 80.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -40,7 +40,7 @@ inventory = [[],[],[],[]]
 inventory_max = 10
 hp_max = 100
 mp_max = 100
-gold = 1000
+gold = 10000
 
 cx, cy, rx, ry = 1925, 890, 300, 230
 rl, rb, rr, rt = 1325, 840, 1725, 1010

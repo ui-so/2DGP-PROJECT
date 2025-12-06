@@ -2,9 +2,13 @@ from pico2d import load_image
 import play_mode
 
 class Back:
-    def __init__(self):
-        # 2000x2000 짜리 거대한 배경 이미지라고 가정
-        self.image = load_image('background.png')
+    def __init__(self, num = 0):
+        if num == 1:
+            self.image = load_image('Background_1.png')
+        elif num == 2:
+            self.image = load_image('Background_2.png')
+        elif num == 3:
+            self.image = load_image('Background_3.png')
         self.scale = 4.0  # 2배 확대
 
     def update(self):
