@@ -81,15 +81,15 @@ class SLIME:
             self.y += RUN_SPEED_PPS * self.dir_y * game_framework.frame_time
 
             if self.map == 'prairie':
-                self.constrain_to_ellipse(3670, 860, 890, 520)
+                self.constrain_to_ellipse(3670, 860, 870, 500)
             elif self.map == 'lava':
-                self.constrain_to_ellipse(3650, 2570, 900, 500)
+                self.constrain_to_ellipse(3650, 2570, 880, 480)
             elif self.map == 'ice':
-                self.constrain_to_ellipse(1200, 2500, 900, 520)
+                self.constrain_to_ellipse(1200, 2500, 880, 500)
             elif self.map == 'cave':
-                self.constrain_to_ellipse(3500, 4080, 1000, 500)
+                self.constrain_to_ellipse(3500, 4080, 980, 480)
 
-            if self.x + 100 >= play_mode.player.x - 50 and self.x - 100 <= play_mode.player.x + 40 and self.y + 70 >= play_mode.player.y - 50 and self.y - 120 <= play_mode.player.y + 40:
+            if self.x + 110 >= play_mode.player.x - 50 and self.x - 100 <= play_mode.player.x + 40 and self.y + 50 >= play_mode.player.y - 50 and self.y - 140 <= play_mode.player.y + 40:
                 self.attack()
 
     def draw(self):
@@ -105,7 +105,7 @@ class SLIME:
         else:
             self.image.clip_draw(frame_idx, 0, 128, 128, sx, sy, self.draw_w, self.draw_h)
         draw_rectangle(*self.get_bb())
-        draw_rectangle(sx - 100, sy - 120, sx + 100, sy+70)
+        draw_rectangle(sx - 100, sy - 140, sx + 110, sy+50)
 
     def attack(self):
         if get_time() - self.attack_time > 3.0:
@@ -139,16 +139,16 @@ class SLIME:
                 player.gold += 10
                 key_num = 1
             elif self.map == 'lava':
-                player.gold += 100
+                player.gold += 25
                 key_num = 2
             elif self.map == 'ice':
-                player.gold += 500
+                player.gold += 50
                 key_num = 3
             elif self.map == 'cave':
-                player.gold += 1000
+                player.gold += 100
                 key_num = 4
 
-            if random.randint(1, 100) <= 100:
+            if random.randint(1, 100) <= 20:
                 key = Key(key_num, self.x, self.y)
                 game_world.add_object(key, 1)
                 game_world.add_collision_pair('player:key', None, key)

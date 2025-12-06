@@ -80,7 +80,7 @@ class P_SLIME:
         if self.map == 'farm_1' or self.map == 'farm_2' or self.map == 'farm_3' or self.map == 'farm_4' or self.map == play_mode.ISLAND:
             if get_time() - self.plort_timer > 10.0:
                 self.plort_timer = get_time()
-                plort = Plort(self.num, self.x, self.y)
+                plort = Plort(self.num, self.x, self.y-10)
                 game_world.add_object(plort, 1)
                 game_world.add_collision_pair('catch:plort', None, plort)
 
@@ -102,14 +102,14 @@ class P_SLIME:
         elif self.map == 'farm_4':
             self.constrain_rect(791,680,1086,870)
 
-        elif self.map == 'prairie':
-                self.constrain_to_ellipse(3670, 860, 890, 520)
+        if self.map == 'prairie':
+            self.constrain_to_ellipse(3670, 860, 870, 500)
         elif self.map == 'lava':
-                self.constrain_to_ellipse(3650, 2570, 900, 500)
+            self.constrain_to_ellipse(3650, 2570, 880, 480)
         elif self.map == 'ice':
-                self.constrain_to_ellipse(1200, 2500, 900, 520)
+            self.constrain_to_ellipse(1200, 2500, 880, 500)
         elif self.map == 'cave':
-                self.constrain_to_ellipse(3500, 4080, 1000, 500)
+            self.constrain_to_ellipse(3500, 4080, 980, 480)
 
 
     def draw(self):
