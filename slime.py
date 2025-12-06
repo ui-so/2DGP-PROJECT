@@ -4,6 +4,7 @@ import game_world
 import play_mode
 from slime_attack import Slime_Attack
 import player
+from key import Key
 
 from pico2d import *
 import math
@@ -52,7 +53,7 @@ class SLIME:
         self.frame = random.randint(0, int(FRAMES_PER_ACTION) - 1)
         self.dir_x = random.choice([-1, 1])
         self.dir_y = random.choice([-1, 1])
-        self.size = 200
+        self.size = 1000
         self.draw_w = 150
         self.draw_h = 150
         self.x = random.randint(x - self.size // 2, x + self.size // 2)
@@ -64,7 +65,7 @@ class SLIME:
         self.attack_time = 0.0
 
     def get_bb(self):
-        return self.x - play_mode.camera_x - 30, self.y- play_mode.camera_y - 50, self.x - play_mode.camera_x + 30, self.y - play_mode.camera_y - 10
+        return self.x - play_mode.camera_x - 20, self.y- play_mode.camera_y - 80, self.x - play_mode.camera_x + 40, self.y - play_mode.camera_y-20
 
     def update(self):
         if self.map == play_mode.ISLAND:
@@ -109,7 +110,7 @@ class SLIME:
     def attack(self):
         if get_time() - self.attack_time > 3.0:
             self.attack_time = get_time()
-            attack = Slime_Attack(self.x, self.y-25, self.dir_x, play_mode.player.x, play_mode.player.y)
+            attack = Slime_Attack(self.map, self.x, self.y-25, self.dir_x, play_mode.player.x, play_mode.player.y)
             game_world.add_object(attack, 1)
             game_world.add_collision_pair('player:slime_attack', None, attack)
 
@@ -134,5 +135,23 @@ class SLIME:
         if group == 'slime:attack':
             print("Slime Hit!")
             game_world.remove_object(self)
-            player.gold += 10
+            if self.map == 'prairie':
+                player.gold += 10
+                key_num = 1
+            elif self.map == 'lava':
+                player.gold += 100
+                key_num = 2
+            elif self.map == 'ice':
+                player.gold += 500
+                key_num = 3
+            elif self.map == 'cave':
+                player.gold += 1000
+                key_num = 4
+
+            if random.randint(1, 100) <= 100:
+                key = Key(key_num, self.x, self.y)
+                game_world.add_object(key, 1)
+                game_world.add_collision_pair('player:key', None, key)
+
+
         pass

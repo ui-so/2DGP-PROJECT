@@ -17,6 +17,10 @@ class Ui:
         self.Red_Plort = load_image('Red_Plort.png')
         self.Blue_Plort = load_image('Blue_Plort.png')
         self.Black_Plort = load_image('Black_Plort.png')
+        self.Green_Key = load_image('Green_Key.png')
+        self.Red_Key = load_image('Red_Key.png')
+        self.Blue_Key = load_image('Blue_Key.png')
+        self.Black_Key = load_image('Black_Key.png')
 
         self.font = load_font('ENCR10B.TTF', 16)
 
@@ -56,7 +60,18 @@ class Ui:
                     self.Black_Plort.clip_draw(0, 0, 32, 32, 1024 // 2 + (i*70)-5, 768 // 6 - 80, 50, 50)
                     self.font.draw(1024 // 2 + (i*70) + 5, 768 // 6 - 40 - 20, f'{count}', (0, 0, 0))
 
-        self.font.draw(1024 // 2 - 100, 768 // 6 - 58, f'{player.gold}', (0, 0, 0))
+
+        for i in range(4):
+            if play_mode.KEY[i]:
+                if i == 0:
+                    self.Green_Key.clip_draw(0, 0, 32, 32, 1024 // 2 - 275 + (i*40), 768 // 6 - 40, 40, 40)
+                elif i == 1:
+                    self.Red_Key.clip_draw(0, 0, 32, 32, 1024 // 2 - 275 + (i*40), 768 // 6- 40, 40, 40)
+                elif i == 2:
+                    self.Blue_Key.clip_draw(0, 0, 32, 32, 1024 // 2 - 275 + (i*40), 768 // 6- 40, 40, 40)
+                elif i == 3:
+                    self.Black_Key.clip_draw(0, 0, 32, 32, 1024 // 2 - 275 + (i*40), 768 // 6 - 40, 40, 40)
+        self.font.draw(1024 // 2 - 120, 768 // 6 - 58, f'{player.gold}', (0, 0, 0))
 
         FIXED_BAR_WIDTH = 200
 

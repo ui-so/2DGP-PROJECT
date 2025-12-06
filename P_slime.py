@@ -59,7 +59,7 @@ class P_SLIME:
         self.frame = random.randint(0, int(FRAMES_PER_ACTION) - 1)
         self.dir_x = random.choice([-1, 1])
         self.dir_y = random.choice([-1, 1])
-        self.size = 300
+        self.size = 600
         self.draw_w = 100
         self.draw_h = 100
         self.map = map

@@ -30,16 +30,12 @@ class Key:
 
         if self.num == 1:
             self.image = Key.green_image
-            self.item_id = 'Green_Key'  # 인벤토리용
         elif self.num == 2:
             self.image = Key.red_image
-            self.item_id = 'Red_Key'
         elif self.num == 3:
             self.image = Key.blue_image
-            self.item_id = 'Blue_Key'  # 인벤토리용
         elif self.num == 4:
             self.image = Key.black_image
-            self.item_id = 'Black_Key'
         else:
             self.image = None  # 예외 처리
 
@@ -58,3 +54,4 @@ class Key:
     def handle_collision(self, group, other):
         if group == 'player:key':
             game_world.remove_object(self)
+            play_mode.KEY[self.num - 1] = 1

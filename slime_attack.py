@@ -1,6 +1,7 @@
 from pico2d import *
 import game_world
 import game_framework
+import play_mode
 from game_world import remove_object
 
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -9,14 +10,36 @@ RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-PIXEL_PER_METER = (1.0 / 0.003)  # 1pixel = 3cm, 1m = 33.33 pixel
 
 class Slime_Attack:
-    image = None
+    green_image = None
+    red_image = None
+    blue_image = None
+    black_image = None
 
-    def __init__(self, x = 400, y = 300, dir = 1, target_x = 400, target_y = 300):
-        if Slime_Attack.image == None:
-            Slime_Attack.image = load_image('Slime_attack.png')
+    def load_images(self):
+        if Slime_Attack.green_image is None:
+            Slime_Attack.green_image = load_image('Green_attack.png')
+        if Slime_Attack.red_image is None:
+            Slime_Attack.red_image = load_image('Red_attack.png')
+        if Slime_Attack.blue_image is None:
+            Slime_Attack.blue_image = load_image('Blue_attack.png')
+        if Slime_Attack.black_image is None:
+            Slime_Attack.black_image = load_image('Black_attack.png')
+
+    def __init__(self, map = 'prairie', x = 400, y = 300, dir = 1, target_x = 400, target_y = 300):
+        self.load_images()
+        if map == 'prairie':
+            self.image = Slime_Attack.green_image
+        elif map == 'lava':
+            self.image = Slime_Attack.red_image
+        elif map == 'ice':
+            self.image = Slime_Attack.blue_image
+        elif map == 'cave':
+            self.image = Slime_Attack.black_image
+        else:
+            self.image = None
+
         self.dir = dir
         self.size = 35
         self.x, self.y = x, y
@@ -25,7 +48,9 @@ class Slime_Attack:
         self.t = 0.0
 
     def draw(self):
-        self.image.draw(self.x, self.y, self.size, self.size)
+        sx = self.x - play_mode.camera_x
+        sy = self.y - play_mode.camera_y
+        self.image.draw(sx, sy, self.size, self.size)
         draw_rectangle(*self.get_bb())
 
     def update(self):
@@ -38,7 +63,7 @@ class Slime_Attack:
             game_world.remove_object(self)
 
     def get_bb(self):
-        return self.x - self.size//2, self.y - self.size//2, self.x + self.size//2, self.y + self.size//2
+        return self.x - self.size//2-play_mode.camera_x, self.y - self.size//2-play_mode.camera_y, self.x + self.size//2-play_mode.camera_x, self.y + self.size//2-play_mode.camera_y
 
     def handle_collision(self, group, other):
         if group == 'slime:attack':

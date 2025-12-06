@@ -34,6 +34,8 @@ BRIDGE = []
 slime_respawn = [[],[],[],[]]
 P_slime_respawn = [[],[],[],[]]
 
+KEY = [0,0,0,0]
+
 def handle_events():
     event_list = get_events()
     for event in event_list:
@@ -60,6 +62,7 @@ def handle_events():
             if MAP == 'spawn_1' or MAP == 'spawn_2':
                 shop_x, shop_y = 2000, 950
                 next_x, next_y = 2250, 850
+                home_x , home_y = 1830, 950
                 if (shop_x - 50 < player.x < shop_x + 50) and (shop_y - 50 < player.y < shop_y + 50):
                     game_framework.push_mode(shop)
                 elif BRIDGE[0] == 0 and (next_x - 80 < player.x < next_x + 80) and (next_y - 80 < player.y < next_y + 80):
@@ -68,6 +71,9 @@ def handle_events():
                         BRIDGE[0] = 1
                         bridge = Bridge(1)
                         game_world.add_object(bridge,0)
+                elif (home_x - 50 < player.x < home_x + 50) and (home_y - 50 < player.y < home_y + 50):
+                    PLAYER.hp = PLAYER.hp_max
+                    PLAYER.mp = PLAYER.mp_max
 
             elif MAP == 'prairie_1' or MAP == 'prairie_2':
                 next_x, next_y = 3650, 1300
@@ -146,6 +152,7 @@ def init():
     game_world.add_object(player, 2)
 
     game_world.add_collision_pair('player:slime_attack', player, None)
+    game_world.add_collision_pair('player:key', player, None)
 
     for slime in P_slimes:
         game_world.add_collision_pair('slime:catch', slime, None)
