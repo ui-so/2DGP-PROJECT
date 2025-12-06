@@ -34,23 +34,6 @@ def update():
 def draw():
     clear_canvas()
     game_world.render()
-    if Page == 0:
-        for i in range(1, 5):
-            if i == select:
-                draw_rectangle(1024 // 4 + ((i-1)*120) - 75, 768 // 3-75, 1024 // 4 + ((i-1)*120), 768 // 3)
-
-        draw_rectangle(1024 // 4 + (4 * 120) - 80, 768 // 3 - 60, 1024 // 4 + (4 * 120)+5, 768 // 3 - 10)
-
-        draw_rectangle(1024 // 4 + (4 * 120) + 70, 768 // 3 - 60, 1024 // 4 + (4 * 120)+130, 768 // 3 - 10)
-
-    elif Page == 1:
-        draw_rectangle(1024 // 2 - 315, 768 // 2 - 50 , 1024 // 2 - 145 , 768 // 2 - 120)
-        draw_rectangle(1024 // 2 - 80, 768 // 2 - 50 , 1024 // 2 + 90 , 768 // 2 - 120)
-        draw_rectangle(1024 // 2 + 155, 768 // 2 - 50 , 1024 // 2 + 325 , 768 // 2 - 120)
-
-    draw_rectangle(1024 // 2 + 300, 768 // 2 - 220, 1024 // 2 + 350 , 768 // 2 - 270)
-    draw_rectangle(1024 // 2 - 300, 768 // 2 - 220, 1024 // 2 - 350, 768 // 2 - 270)
-
     update_canvas()
 
 
@@ -101,7 +84,7 @@ def handle_events():
                                 if player.inventory[select-1][1] <= 0:
                                     player.inventory[select-1] = []
                             if item_name == 'Blue_plort':
-                                player.gold += 40
+                                player.gold += 50
                                 player.inventory[select-1][1] -= 1
                                 if player.inventory[select-1][1] <= 0:
                                     player.inventory[select-1] = []
@@ -111,7 +94,7 @@ def handle_events():
                                 if player.inventory[select-1][1] <= 0:
                                     player.inventory[select-1] = []
                             if item_name == 'Black_plort':
-                                player.gold += 60
+                                player.gold += 75
                                 player.inventory[select-1][1] -= 1
                                 if player.inventory[select-1][1] <= 0:
                                     player.inventory[select-1] = []
@@ -143,7 +126,7 @@ def handle_events():
                     if shop_count[2] < 5 and player.gold >= shop_gold[2]:
                         shop_count[2] += 1
                         player.gold -= shop_gold[2]
-                        shop_gold[2] += 1000
+                        shop_gold[2] += 500
                         player.inventory_max += 5
 
 def pause():

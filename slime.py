@@ -104,8 +104,7 @@ class SLIME:
             self.image.clip_composite_draw(frame_idx, 0, 128, 128, 0, 'h', sx, sy, self.draw_w, self.draw_h)
         else:
             self.image.clip_draw(frame_idx, 0, 128, 128, sx, sy, self.draw_w, self.draw_h)
-        draw_rectangle(*self.get_bb())
-        draw_rectangle(sx - 100, sy - 140, sx + 110, sy+50)
+
 
     def attack(self):
         if get_time() - self.attack_time > 3.0:
@@ -149,7 +148,7 @@ class SLIME:
                 player.gold += 100
                 key_num = 4
 
-            if random.randint(1, 100) <= 20:
+            if random.randint(1, 100) <= 5:
                 key = Key(key_num, self.x, self.y)
                 game_world.add_object(key, 1)
                 game_world.add_collision_pair('player:key', None, key)

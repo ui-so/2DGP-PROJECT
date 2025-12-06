@@ -126,7 +126,7 @@ class P_SLIME:
             self.image.clip_composite_draw(frame_idx, 0, 128, 128, 0, 'h', sx, sy, self.draw_w, self.draw_h)
         else:
             self.image.clip_draw(frame_idx, 0, 128, 128, sx, sy, self.draw_w, self.draw_h)
-        draw_rectangle(*self.get_bb())
+
 
     def constrain_to_ellipse(self, cx, cy, rx, ry):
         dx = self.x - cx

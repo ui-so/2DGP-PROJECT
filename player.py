@@ -17,7 +17,7 @@ from catch import Catch
 
 # Player Run Speed
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 80.0  # Km / Hour
+RUN_SPEED_KMPH = 30.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -40,7 +40,7 @@ inventory = [[],[],[],[]]
 inventory_max = 10
 hp_max = 100
 mp_max = 100
-gold = 1000000
+gold = 50
 
 cx, cy, rx, ry = 1925, 890, 300, 230
 rl, rb, rr, rt = 1325, 840, 1725, 1010
@@ -273,13 +273,16 @@ class Death:
         global inventory
         for i in range(4):
             inventory[i] = []
-        self.player.hp = 100
-        self.player.x, self.player.y = 1925, 870
+        self.player.hp = hp_max
+        self.player.mp = mp_max
 
     def do(self):
         self.player.frame = (self.player.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time * 0.5)
         if self.player.frame > 7:
             self.player.frame = 0
+            self.player.x, self.player.y = 1925, 870
+            play_mode.MAP = 'spawn_1'
+            play_mode.ISLAND = 'spawn'
             self.player.state_machine.handle_state_event(('Finish_Hurt', None))
 
     def draw(self):
@@ -352,27 +355,6 @@ class Player:
 
     def draw(self):
         self.state_machine.draw()
-        draw_rectangle(*self.get_bb())
-
-        # --- 화면 좌표 변환 ---
-        cam_x = play_mode.camera_x
-        cam_y = play_mode.camera_y
-
-        if play_mode.MAP in map_limit.MAP_LIMITS:
-            limit_data = map_limit.MAP_LIMITS[play_mode.MAP]
-
-            cx, cy, rx, ry = limit_data[0:4]  # 앞 4개는 타원 정보
-            rl, rb, rr, rt = limit_data[4:8]
-
-            self.draw_ellipse_debug(cx - cam_x, cy - cam_y, rx, ry)
-            draw_rectangle(rl - cam_x, rb - cam_y, rr - cam_x, rt - cam_y)
-
-        if play_mode.MAP in map_limit.MAP_OBSTACLES:
-            obstacle_list = map_limit.MAP_OBSTACLES[play_mode.MAP]
-
-            for obs_data in obstacle_list:
-                l, b, r, t = obs_data
-                draw_rectangle(l - cam_x, b - cam_y, r - cam_x, t - cam_y)
 
 
     def handle_event(self, event):

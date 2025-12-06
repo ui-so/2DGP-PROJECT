@@ -45,6 +45,12 @@ def handle_events():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_0:
+            PLAYER.gold += 1000
+        elif event.type == SDL_KEYDOWN and event.key == SDLK_9:
+            global KEY
+            KEY = [1,1,1,1]
+
         elif event.type == SDL_KEYDOWN and event.key == SDLK_e:
             global player
             if MAP == 'farm':
@@ -68,8 +74,8 @@ def handle_events():
                 if (shop_x - 50 < player.x < shop_x + 50) and (shop_y - 50 < player.y < shop_y + 50):
                     game_framework.push_mode(shop)
                 elif BRIDGE[0] == 0 and (next_x - 80 < player.x < next_x + 80) and (next_y - 80 < player.y < next_y + 80):
-                    if PLAYER.gold >= 100:
-                        PLAYER.gold -= 100
+                    if PLAYER.gold >= 50:
+                        PLAYER.gold -= 50
                         BRIDGE[0] = 1
                         bridge = Bridge(1)
                         game_world.add_object(bridge,0)
@@ -80,8 +86,8 @@ def handle_events():
             elif MAP == 'prairie_1' or MAP == 'prairie_2':
                 next_x, next_y = 3650, 1300
                 if BRIDGE[1] == 0 and (next_x - 100 < player.x < next_x + 100) and (next_y - 100 < player.y < next_y + 100):
-                    if PLAYER.gold >= 500:
-                        PLAYER.gold -= 500
+                    if PLAYER.gold >= 1000:
+                        PLAYER.gold -= 1000
                         BRIDGE[1] = 1
                         bridge = Bridge(2)
                         game_world.add_object(bridge,0)
@@ -90,14 +96,14 @@ def handle_events():
                 next_x1, next_y1 = 2750, 2500
                 next_x2, next_y2 = 3560, 3000
                 if BRIDGE[2] == 0 and (next_x1 - 100 < player.x < next_x1 + 100) and (next_y1 - 100 < player.y < next_y1 + 100):
-                    if PLAYER.gold >= 700:
-                        PLAYER.gold -= 700
+                    if PLAYER.gold >= 2500:
+                        PLAYER.gold -= 2500
                         BRIDGE[2] = 1
                         bridge = Bridge(3)
                         game_world.add_object(bridge,0)
                 elif BRIDGE[3] == 0 and (next_x2 - 100 < player.x < next_x2 + 100) and (next_y2 - 100 < player.y < next_y2 + 100):
-                    if PLAYER.gold >= 1000:
-                        PLAYER.gold -= 700
+                    if PLAYER.gold >= 5000:
+                        PLAYER.gold -= 5000
                         BRIDGE[3] = 1
                         bridge = Bridge(4)
                         game_world.add_object(bridge,0)
@@ -105,15 +111,15 @@ def handle_events():
             elif MAP == 'cave_1' or MAP == 'cave_2':
                 next_x, next_y = 2550, 4000
                 if BRIDGE[4] == 0 and (next_x - 100 < player.x < next_x + 100) and (next_y - 100 < player.y < next_y + 100):
-                    if PLAYER.gold >= 1500:
-                        PLAYER.gold -= 1500
+                    if PLAYER.gold >= 10000:
+                        PLAYER.gold -= 10000
                         BRIDGE[4] = 1
                         bridge = Bridge(5)
                         game_world.add_object(bridge,0)
 
             elif MAP == 'end_1':
                 home_x , home_y = 1050, 4000
-                if (home_x - 50 < player.x < home_x + 50) and (home_y - 50 < player.y < home_y + 50):
+                if (home_x - 350 < player.x < home_x + 350) and (home_y - 350 < player.y < home_y + 350):
                     if KEY[0] == 1 and KEY[1] == 1 and KEY[2] == 1 and KEY[3] == 1:
                         game_framework.push_mode(end_mode)
         else:
@@ -190,16 +196,24 @@ def update():
 
     for i in range(4):
         for j in range(10):
+            if i == 0:
+                island = 'prairie'
+            elif i == 1:
+                island = 'lava'
+            elif i == 2:
+                island = 'ice'
+            elif i == 3:
+                island = 'cave'
             if P_slime_respawn[i][j] != -1:
                 if get_time() - P_slime_respawn[i][j] > 10.0:
-                    new_slime = P_SLIME(i+1, ISLAND, 2000, 2000)
+                    new_slime = P_SLIME(i+1, island, 2000, 2000)
                     game_world.add_object(new_slime, 1)
                     game_world.add_collision_pair('slime:catch', new_slime, None)
                     P_slimes.append(new_slime)
                     P_slime_respawn[i][j] = -1
             if slime_respawn[i][j] != -1:
                 if get_time() - slime_respawn[i][j] > 10.0:
-                    new_slime = SLIME(ISLAND, 2000, 2000)
+                    new_slime = SLIME(island, 2000, 2000)
                     game_world.add_object(new_slime, 1)
                     game_world.add_collision_pair('slime:attack', new_slime, None)
                     game_world.add_collision_pair('player:slime', None, new_slime)
@@ -218,63 +232,24 @@ def draw():
         if BRIDGE[i] == 0:
             if i == 0:
                 sx, sy = 2250 - camera_x + 10, 850 - camera_y
-                need_gold = 100
+                need_gold = 50
                 font.draw(sx, sy, f'{PLAYER.gold} / {need_gold} ', (255, 255, 255))
             elif i == 1:
                 sx, sy = 3600 - camera_x + 10, 1400 - camera_y
-                need_gold = 500
+                need_gold = 1000
                 font.draw(sx, sy, f'{PLAYER.gold} / {need_gold} ', (255, 255, 255))
             elif i == 2:
                 sx, sy = 2700 - camera_x + 10, 2550 - camera_y
-                need_gold = 700
+                need_gold = 2500
                 font.draw(sx, sy, f'{PLAYER.gold} / {need_gold} ', (255, 255, 255))
             elif i == 3:
                 sx, sy = 3490 - camera_x + 10, 3050 - camera_y
-                need_gold = 1000
+                need_gold = 5000
                 font.draw(sx, sy, f'{PLAYER.gold} / {need_gold} ', (255, 255, 255))
             elif i == 4:
                 sx, sy = 2425 - camera_x + 10, 4025 - camera_y
-                need_gold = 1500
+                need_gold = 10000
                 font.draw(sx, sy, f'{PLAYER.gold} / {need_gold} ', (255, 255, 255))
-
-
-    if MAP == 'spawn_1' or MAP == 'spawn_2':
-        sx, sy = 1830 - camera_x, 950 - camera_y
-        draw_rectangle(sx - 50, sy - 50, sx + 50, sy + 50)
-
-        sx, sy = 2000 - camera_x, 950 - camera_y
-        draw_rectangle(sx - 50, sy - 50, sx + 50, sy + 50)
-
-        sx, sy = 2250 - camera_x, 850 - camera_y
-        draw_rectangle(sx - 80, sy - 80, sx + 80, sy + 80)
-
-    elif MAP == 'prairie_1' or MAP == 'prairie_2':
-        sx, sy = 3650 - camera_x, 1300 - camera_y
-        draw_rectangle(sx - 100, sy - 100, sx + 100, sy + 100)
-
-    elif MAP == 'lava_1' or MAP == 'lava_2' or MAP == 'lava_3':
-        sx, sy = 2750 - camera_x, 2500 - camera_y
-        draw_rectangle(sx - 100, sy - 100, sx + 100, sy + 100)
-        sx, sy = 3560 - camera_x, 3000 - camera_y
-        draw_rectangle(sx - 100, sy - 100, sx + 100, sy + 100)
-
-    elif MAP == 'cave_1' or MAP == 'cave_2':
-        sx, sy = 2550 - camera_x, 4000 - camera_y
-        draw_rectangle(sx - 100, sy - 100, sx + 100, sy + 100)
-
-    elif MAP == 'farm':
-        sx, sy = 680 - camera_x, 1000 - camera_y
-        draw_rectangle(sx - 80, sy - 110, sx + 30, sy)
-        sx, sy = 835 - camera_x, 1000 - camera_y
-        draw_rectangle(sx - 30, sy - 110, sx + 80, sy)
-        sx, sy = 636 - camera_x, 720 - camera_y
-        draw_rectangle(sx - 80, sy - 110, sx + 30, sy)
-        sx, sy = 791 - camera_x, 720 - camera_y
-        draw_rectangle(sx - 30, sy - 110, sx + 80, sy)
-
-    elif MAP == 'end_1':
-        sx, sy = 1050 - camera_x, 4000 - camera_y
-        draw_rectangle(sx - 50, sy - 50, sx + 50, sy + 50)
 
     update_canvas()
 

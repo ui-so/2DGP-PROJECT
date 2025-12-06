@@ -17,6 +17,12 @@ class ShopPannel:
         self.Blue_Plort = load_image('Blue_Plort.png')
         self.Red_Plort = load_image('Red_Plort.png')
         self.Black_Plort = load_image('Black_Plort.png')
+
+        self.select_image_1 = load_image('UI_select.png')
+        self.select_image_2 = load_image('UI_select_2.png')
+        self.select_image_3 = load_image('UI_select_3.png')
+        self.select_image_4 = load_image('UI_select_4.png')
+
         self.font = load_font('ENCR10B.TTF', 16)
 
         self.Page = page
@@ -24,6 +30,16 @@ class ShopPannel:
     def draw(self):
             if self.Page == 0:
                 self.shop_image_1.draw(1024//2, 768//2, 768, 576)
+
+                if shop.select == 1:
+                    self.select_image_1.draw(1024//2, 768//2, 768, 576)
+                elif shop.select == 2:
+                    self.select_image_2.draw(1024//2, 768//2, 768, 576)
+                elif shop.select == 3:
+                    self.select_image_3.draw(1024//2, 768//2, 768, 576)
+                elif shop.select == 4:
+                    self.select_image_4.draw(1024//2, 768//2, 768, 576)
+
                 self.font.draw(1024 // 4 + (4 * 120) - 60, 768 // 3-35,'Sell', (0, 0, 0))
                 count = 0
                 for i in range(4):

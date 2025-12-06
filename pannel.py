@@ -15,10 +15,26 @@ class Pannel:
         self.Red_Plort = load_image('Red_Plort.png')
         self.Blue_Plort = load_image('Blue_Plort.png')
         self.Black_Plort = load_image('Black_Plort.png')
+
+        self.select_image_1 = load_image('UI_select.png')
+        self.select_image_2 = load_image('UI_select_2.png')
+        self.select_image_3 = load_image('UI_select_3.png')
+        self.select_image_4 = load_image('UI_select_4.png')
+
         self.font = load_font('ENCR10B.TTF', 16)
 
     def draw(self):
         self.image.draw(1024//2, 768//2, 768, 576)
+
+        if farm_shop.select == 1:
+            self.select_image_1.draw(1024//2, 768//2, 768, 576)
+        elif farm_shop.select == 2:
+            self.select_image_2.draw(1024//2, 768//2, 768, 576)
+        elif farm_shop.select == 3:
+            self.select_image_3.draw(1024//2, 768//2, 768, 576)
+        elif farm_shop.select == 4:
+            self.select_image_4.draw(1024//2, 768//2, 768, 576)
+
         self.font.draw(1024 // 4 + (4 * 120) - 58, 768 // 3,'PUT', (0, 0, 0))
         self.font.draw(1024 // 4 + (4 * 120) - 77, 768 // 3 - 75, 'TAKE OUT', (0, 0, 0))
         self.font.draw(1024 // 4 + (4 * 120) - 101, 768 // 3 + 160, 'TAKE OUT', (0, 0, 0))

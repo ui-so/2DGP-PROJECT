@@ -115,14 +115,6 @@ def update():
 def draw():
     clear_canvas()
     game_world.render()
-    for i in range(1, 5):
-        if i == select:
-            draw_rectangle(1024 // 4 + ((i-1)*120) - 75, 768 // 3-75, 1024 // 4 + ((i-1)*120), 768 // 3)
-
-    draw_rectangle(1024 // 4 + (4 * 120) - 80, 768 // 3 - 30, 1024 // 4 + (4 * 120)+5, 768 // 3+30)
-    draw_rectangle(1024 // 4 + (4 * 120) - 80, 768 // 3 - 105, 1024 // 4 + (4 * 120) + 5, 768 // 3 - 50)
-
-    draw_rectangle(1024 // 4 + (4 * 120) - 105, 768 // 3 + 130, 1024 // 4 + (4 * 120)-20, 768 // 3 + 190)
     update_canvas()
 
 

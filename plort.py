@@ -47,7 +47,6 @@ class Plort:
         sx = self.x - play_mode.camera_x
         sy = self.y - play_mode.camera_y
         self.image.draw(sx, sy, self.size, self.size)
-        draw_rectangle(*self.get_bb())
 
     def update(self):
         pass

@@ -17,7 +17,6 @@ class Attack:
 
     def draw(self):
         self.image.draw(self.x, self.y, self.size, self.size)
-        draw_rectangle(*self.get_bb())
 
     def update(self):
         # 위치 업데이트

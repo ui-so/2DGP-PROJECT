@@ -5,7 +5,7 @@ import play_mode
 from game_world import remove_object
 
 PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-RUN_SPEED_KMPH = 5.0  # Km / Hour
+RUN_SPEED_KMPH = 3.0  # Km / Hour
 RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
 RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
 RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -51,7 +51,6 @@ class Slime_Attack:
         sx = self.x - play_mode.camera_x
         sy = self.y - play_mode.camera_y
         self.image.draw(sx, sy, self.size, self.size)
-        draw_rectangle(*self.get_bb())
 
     def update(self):
         self.t += game_framework.frame_time / 1.0
