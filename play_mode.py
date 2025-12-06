@@ -33,6 +33,7 @@ BRIDGE = []
 
 slime_respawn = [[],[],[],[]]
 P_slime_respawn = [[],[],[],[]]
+farm_plort = [[],[],[],[]]
 
 KEY = [0,0,0,0]
 
@@ -72,8 +73,8 @@ def handle_events():
                         bridge = Bridge(1)
                         game_world.add_object(bridge,0)
                 elif (home_x - 50 < player.x < home_x + 50) and (home_y - 50 < player.y < home_y + 50):
-                    PLAYER.hp = PLAYER.hp_max
-                    PLAYER.mp = PLAYER.mp_max
+                    player.hp = PLAYER.hp_max
+                    player.mp = PLAYER.mp_max
 
             elif MAP == 'prairie_1' or MAP == 'prairie_2':
                 next_x, next_y = 3650, 1300

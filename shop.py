@@ -15,6 +15,9 @@ new_slime = None
 
 Page = 0
 
+shop_count = [0,0,0]
+shop_gold = [100, 100, 1000]
+
 def init():
     global shoppannel, Page
 
@@ -36,8 +39,9 @@ def draw():
             if i == select:
                 draw_rectangle(1024 // 4 + ((i-1)*120) - 75, 768 // 3-75, 1024 // 4 + ((i-1)*120), 768 // 3)
 
-        draw_rectangle(1024 // 4 + (4 * 120) - 80, 768 // 3 - 30, 1024 // 4 + (4 * 120)+5, 768 // 3+30)
-        draw_rectangle(1024 // 4 + (4 * 120) - 80, 768 // 3 - 105, 1024 // 4 + (4 * 120) + 5, 768 // 3 - 50)
+        draw_rectangle(1024 // 4 + (4 * 120) - 80, 768 // 3 - 60, 1024 // 4 + (4 * 120)+5, 768 // 3 - 10)
+
+        draw_rectangle(1024 // 4 + (4 * 120) + 70, 768 // 3 - 60, 1024 // 4 + (4 * 120)+130, 768 // 3 - 10)
 
     elif Page == 1:
         draw_rectangle(1024 // 2 - 315, 768 // 2 - 50 , 1024 // 2 - 145 , 768 // 2 - 120)
@@ -77,7 +81,18 @@ def handle_events():
             global Now_slime, Page, shoppannel
             x, y = event.x, 768 - event.y
             if Page == 0:
-                if x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 30 and y < 768 // 3 + 30:
+                if x > 1024 // 4 + (4 * 120) + 70 and x < 1024 // 4 + (4 * 120) + 130 and y > 768 // 3 - 60 and y < 768 // 3 - 10:
+                    selected_slot = player.inventory[select - 1]
+                    if selected_slot and len(selected_slot) == 2:
+                        if selected_slot[1] > 0:
+                            item_name = selected_slot[0]
+                            Now_slime = P_SLIME(item_name, player.x, player.y + 50)
+                            game_world.add_object(Now_slime, 1)
+                            selected_slot[1] -= 1
+                            if selected_slot[1] <= 0:
+                                player.inventory[select-1] = []
+
+                elif x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 60 and y < 768 // 3 - 10:
                     selected_slot = player.inventory[select - 1]
                     if selected_slot and len(selected_slot) == 2:
                         if selected_slot[1] > 0:
@@ -88,7 +103,17 @@ def handle_events():
                                 if player.inventory[select-1][1] <= 0:
                                     player.inventory[select-1] = []
                             if item_name == 'Blue_plort':
-                                player.gold += 20
+                                player.gold += 40
+                                player.inventory[select-1][1] -= 1
+                                if player.inventory[select-1][1] <= 0:
+                                    player.inventory[select-1] = []
+                            if item_name == 'Red_plort':
+                                player.gold += 25
+                                player.inventory[select-1][1] -= 1
+                                if player.inventory[select-1][1] <= 0:
+                                    player.inventory[select-1] = []
+                            if item_name == 'Black_plort':
+                                player.gold += 60
                                 player.inventory[select-1][1] -= 1
                                 if player.inventory[select-1][1] <= 0:
                                     player.inventory[select-1] = []
@@ -105,11 +130,23 @@ def handle_events():
                     shoppannel = ShopPannel(Page)
                     game_world.add_object(shoppannel, 3)
                 elif x > 1024 // 2 - 315 and y < 768 // 2 - 50 and x < 1024 // 2 - 145 and y > 768 // 2 - 120:
-                    player.hp_max += 10
+                    if shop_count[0] < 10 and player.gold >= shop_gold[0]:
+                        shop_count[0] += 1
+                        player.gold -= shop_gold[0]
+                        shop_gold[0] += 200
+                        player.hp_max += 10
                 elif x > 1024 // 2 - 80 and y < 768 // 2 - 50 and x < 1024 // 2 + 90 and y > 768 // 2 - 120:
-                    player.mp_max += 10
+                    if shop_count[1] < 10 and player.gold >= shop_gold[1]:
+                        shop_count[1] += 1
+                        player.gold -= shop_gold[1]
+                        shop_gold[1] += 200
+                        player.mp_max += 10
                 elif x > 1024 // 2 + 155 and y < 768 // 2 - 50 and x < 1024 // 2 + 325 and y > 768 // 2 - 120:
-                    player.inventory_max += 5
+                    if shop_count[2] < 5 and player.gold >= shop_gold[2]:
+                        shop_count[2] += 1
+                        player.gold -= shop_gold[2]
+                        shop_gold[2] += 1000
+                        player.inventory_max += 5
 
 def pause():
     pass

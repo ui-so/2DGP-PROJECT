@@ -1,4 +1,6 @@
 from pico2d import load_image, load_font
+
+import play_mode
 import player
 import farm_shop
 
@@ -53,11 +55,53 @@ class Pannel:
 
         if farm_shop.farm_slime[farm_shop.farm_num-1]:
             if farm_shop.farm_slime[farm_shop.farm_num-1][0] == 'P_slime_green':
-                self.Green_slime_image.clip_draw(0, 0, 128, 128, 1024 // 4 + 20, 768 // 2 + 250, 250, 250)
-                self.font.draw(1024 // 4, 768 // 2 + 50, f'{farm_shop.farm_slime[farm_shop.farm_num-1][1]}', (0, 0, 0))
+                self.Green_slime_image.clip_draw(0, 0, 128, 128, 1024 // 4 + 60, 768 // 2 + 200, 250, 250)
+                self.font.draw(1024 // 4+35, 768 // 2 - 20, f'{farm_shop.farm_slime[farm_shop.farm_num-1][1]}', (0, 0, 0))
+
+                self.Green_Plort.clip_draw(0, 0, 128, 128, 1024 // 4 + 260, 768 // 2 + 100, 150, 150)
+                current_plort_data = play_mode.farm_plort[farm_shop.farm_num - 1]
+                if current_plort_data:
+                    count = current_plort_data[1]
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 20, f'{count}', (0, 0, 0))
+                else:
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 20, '0', (0, 0, 0))
+
             elif farm_shop.farm_slime[farm_shop.farm_num-1][0] == 'P_slime_blue':
-                self.Blue_slime_image.clip_draw(0, 0, 128, 128, 1024 // 4 + 20, 768 // 2 + 250, 250, 250)
-                self.font.draw(1024 // 4, 768 // 2 + 50, f'{farm_shop.farm_slime[farm_shop.farm_num-1][1]}', (0, 0, 0))
+                self.Blue_slime_image.clip_draw(0, 0, 128, 128, 1024 // 4 + 60, 768 // 2 + 200, 250, 250)
+                self.font.draw(1024 // 4+35, 768 // 2 - 20, f'{farm_shop.farm_slime[farm_shop.farm_num-1][1]}', (0, 0, 0))
+
+                self.Blue_Plort.clip_draw(0, 0, 128, 128, 1024 // 4 + 260, 768 // 2 + 100, 150, 150)
+                current_plort_data = play_mode.farm_plort[farm_shop.farm_num - 1]
+                if current_plort_data:
+                    count = current_plort_data[1]
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 20, f'{count}', (0, 0, 0))
+                else:
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 20, '0', (0, 0, 0))
+
+            elif farm_shop.farm_slime[farm_shop.farm_num-1][0] == 'P_slime_red':
+                self.Red_slime_image.clip_draw(0, 0, 128, 128, 1024 // 4 + 60, 768 // 2 + 200, 250, 250)
+                self.font.draw(1024 // 4+35, 768 // 2 - 20, f'{farm_shop.farm_slime[farm_shop.farm_num-1][1]}', (0, 0, 0))
+
+                self.Red_Plort.clip_draw(0, 0, 128, 128, 1024 // 4 + 260, 768 // 2 + 100, 150, 150)
+                current_plort_data = play_mode.farm_plort[farm_shop.farm_num - 1]
+                if current_plort_data:
+                    count = current_plort_data[1]
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 20, f'{count}', (0, 0, 0))
+                else:
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 20, '0', (0, 0, 0))
+
+
+            elif farm_shop.farm_slime[farm_shop.farm_num-1][0] == 'P_slime_black':
+                self.Black_slime_image.clip_draw(0, 0, 128, 128, 1024 // 4 + 60, 768 // 2 + 200, 250, 250)
+                self.font.draw(1024 // 4+35, 768 // 2 - 20, f'{farm_shop.farm_slime[farm_shop.farm_num-1][1]}', (0, 0, 0))
+                self.Black_Plort.clip_draw(0, 0, 128, 128, 1024 // 4 + 260, 768 // 2 + 100, 150, 150)
+                current_plort_data = play_mode.farm_plort[farm_shop.farm_num - 1]
+                if current_plort_data:
+                    count = current_plort_data[1]
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 20, f'{count}', (0, 0, 0))
+                else:
+                    self.font.draw(1024 // 4 + 250, 768 // 2 - 20, '0', (0, 0, 0))
+
 
     def update(self):
         pass

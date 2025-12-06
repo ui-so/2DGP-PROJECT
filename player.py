@@ -342,7 +342,7 @@ class Player:
             for obs_data in obstacle_list:
                 self.rectangle_obstacle(*obs_data)
 
-        if self.hp < hp_max and get_time() - self.heal_hp_time > 5.0:
+        if self.hp < hp_max and get_time() - self.heal_hp_time > 10.0:
             self.hp += 5
             self.heal_hp_time = get_time()
         if self.mp < mp_max and get_time() - self.heal_mp_time > 5.0:
@@ -377,9 +377,10 @@ class Player:
 
     def handle_event(self, event):
         e = ('INPUT', event)
-        # 마우스 왼쪽 클릭은 상태 전이와 무관하게 즉시 공격 생성
         if mouse_left_down(e):
-            self.attack_()
+            if self.mp >= 10:
+                self.mp -= 10
+                self.attack_()
         elif mouse_right_down(e):
             self.catch_()
         self.state_machine.handle_state_event(('INPUT', event))

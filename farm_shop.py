@@ -6,6 +6,7 @@ import play_mode
 from pannel import Pannel
 import player
 from P_slime import P_SLIME
+from plort import Plort
 
 pannel = None
 select = 1
@@ -16,11 +17,65 @@ farm_num = 0
 new_slime = []
 
 def init():
-    global pannel
+    global pannel, count
 
     pannel = Pannel()
     game_world.add_object(pannel,3)
-    pass
+
+    # 1. 범위 설정
+    if farm_num == 1:
+        left, right, bottom, top = 385, 960, 960, 1150
+    elif farm_num == 2:
+        left, right, bottom, top = 835, 1130, 960, 1150
+    elif farm_num == 3:
+        left, right, bottom, top = 341, 636, 680, 870
+    elif farm_num == 4:
+        left, right, bottom, top = 791, 1086, 680, 870
+    else:
+        left, right, bottom, top = 0, 0, 0, 0
+
+    # 2. 현재 농장 데이터 확인 (안전장치)
+    if not farm_slime[farm_num - 1]:
+        return
+
+    # 3. 목표 플로트 결정
+    slime_type = farm_slime[farm_num - 1][0]
+    target_plort_id = ""
+
+    if slime_type == 'P_slime_green':
+        target_plort_id = 'Green_plort'
+    elif slime_type == 'P_slime_blue':
+        target_plort_id = 'Blue_plort'
+    elif slime_type == 'P_slime_red':
+        target_plort_id = 'Red_plort'
+    elif slime_type == 'P_slime_black':
+        target_plort_id = 'Black_plort'
+
+    # 4. 게임 월드 순회 및 수집
+    plorts_to_remove = []
+
+    # [핵심 수정] game_world.objects -> game_world.world 로 변경
+    for layer in game_world.world:
+        for o in layer:
+            if isinstance(o, Plort):
+                if o.item_id == target_plort_id:
+                    if left <= o.x <= right and bottom <= o.y <= top:
+                        plorts_to_remove.append(o)
+
+    # 5. 데이터 저장 및 삭제 처리
+    count = len(plorts_to_remove)
+
+    if count > 0:
+        target_slot = play_mode.farm_plort[farm_num - 1]
+
+        if not target_slot:
+            play_mode.farm_plort[farm_num - 1] = [target_plort_id, count]
+        else:
+            play_mode.farm_plort[farm_num - 1][1] += count
+
+        # 월드에서 삭제
+        for o in plorts_to_remove:
+            game_world.remove_object(o)
 
 def finish():
     global pannel, farm_slime, new_slime

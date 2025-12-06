@@ -78,7 +78,7 @@ def check_map_transition(current_map, x, y):
             return 'cave_1', 'cave'
 
     elif current_map == 'ice_1':
-        if x > 2300: return 'lava_2', None
+        if x > 2300: return 'lava_2', 'lava'
 
     elif current_map == 'cave_1':
         if y < 3500:

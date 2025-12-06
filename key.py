@@ -26,7 +26,7 @@ class Key:
 
         self.size = 35
         self.num = num
-        self.x, self.y = x, y
+        self.x, self.y = x, y-10
 
         if self.num == 1:
             self.image = Key.green_image
@@ -49,7 +49,7 @@ class Key:
         pass
 
     def get_bb(self):
-        return self.x - self.size//2 - play_mode.camera_x, self.y - self.size//2 - play_mode.camera_y, self.x + self.size//2 - play_mode.camera_x, self.y + self.size//2 - play_mode.camera_y
+        return self.x - self.size//3 - play_mode.camera_x, self.y - self.size//3 - play_mode.camera_y, self.x + self.size//3 - play_mode.camera_x, self.y + self.size//3 - play_mode.camera_y
 
     def handle_collision(self, group, other):
         if group == 'player:key':
