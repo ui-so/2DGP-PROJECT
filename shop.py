@@ -19,11 +19,13 @@ shop_count = [0,0,0]
 shop_gold = [100, 100, 1000]
 
 def init():
-    global shoppannel, Page
+    global shoppannel, Page, click
 
     shoppannel = ShopPannel(Page)
     game_world.add_object(shoppannel,3)
-    pass
+
+    click = load_wav('Button_sound.mp3')
+    click.set_volume(32)
 
 def finish():
     game_world.remove_object(shoppannel)
@@ -38,13 +40,15 @@ def draw():
 
 
 def handle_events():
-    global select, player
+    global select, player, click
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
+            click.play()
             game_framework.quit()
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
+                click.play()
                 player.right_pressed = False
                 player.left_pressed = False
                 player.up_pressed = False
@@ -54,14 +58,19 @@ def handle_events():
                 game_framework.pop_mode()
             elif event.key == SDLK_1:
                 select = 1
+                click.play()
             elif event.key == SDLK_2:
                 select = 2
+                click.play()
             elif event.key == SDLK_3:
                 select = 3
+                click.play()
             elif event.key == SDLK_4:
                 select = 4
+                click.play()
         elif event.type == SDL_MOUSEBUTTONDOWN:
             global Now_slime, Page, shoppannel
+            click.play()
             x, y = event.x, 768 - event.y
             if Page == 0:
                 if x > 1024 // 4 + (4 * 120) + 70 and x < 1024 // 4 + (4 * 120) + 130 and y > 768 // 3 - 60 and y < 768 // 3 - 10:

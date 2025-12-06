@@ -43,8 +43,10 @@ def handle_events():
     for event in event_list:
         if event.type == SDL_QUIT:
             game_framework.quit()
+            click.play()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.quit()
+            click.play()
         elif event.type == SDL_KEYDOWN and event.key == SDLK_0:
             PLAYER.gold += 1000
         elif event.type == SDL_KEYDOWN and event.key == SDLK_9:
@@ -52,6 +54,7 @@ def handle_events():
             KEY = [1,1,1,1]
 
         elif event.type == SDL_KEYDOWN and event.key == SDLK_e:
+            click.play()
             global player
             if MAP == 'farm':
                 if player.x > 680-80 and player.x < 680+30 and player.y > 1000-110 and player.y < 1000:
@@ -127,13 +130,16 @@ def handle_events():
 
 
 def init():
-    global player, slimes, P_slimes, ui, font, bgm
+    global player, slimes, P_slimes, ui, font, bgm, click
 
     font = load_font('ENCR10B.TTF', 16)
 
     bgm = load_music('play_bgm.mp3')
     bgm.set_volume(32)
     bgm.repeat_play()
+
+    click = load_wav('Button_sound.mp3')
+    click.set_volume(32)
 
     for i in range(5):
         BRIDGE.append(0)
@@ -256,8 +262,9 @@ def draw():
 
 def finish():
     game_world.clear()
-    global bgm
+    global bgm, click
     del bgm
+    del click
     pass
 
 

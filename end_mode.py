@@ -5,18 +5,23 @@ import play_mode
 
 
 def init():
-    global image, bgm
+    global image, bgm, click
     image = load_image('end.png')
 
     bgm = load_music('end_bgm.mp3')
     bgm.set_volume(32)
     bgm.repeat_play()
 
+    click = load_wav('Button_sound.mp3')
+    click.set_volume(32)
+
+
 
 def finish():
-    global image, bgm
+    global image, bgm, click
     del image
     del bgm
+    del click
 
 def update():
     pass
@@ -33,12 +38,15 @@ def draw():
 
 
 def handle_events():
+    global click
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
             game_framework.quit()
+            click.play()
         elif event.type == SDL_KEYDOWN:
             game_framework.quit()
+            click.play()
 
 def pause():
     pass

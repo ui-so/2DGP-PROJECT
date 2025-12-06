@@ -17,10 +17,13 @@ farm_num = 0
 new_slime = []
 
 def init():
-    global pannel, count
+    global pannel, count, click
 
     pannel = Pannel()
     game_world.add_object(pannel,3)
+
+    click = load_wav('Button_sound.mp3')
+    click.set_volume(32)
 
     # 1. 범위 설정
     if farm_num == 1:
@@ -119,13 +122,15 @@ def draw():
 
 
 def handle_events():
-    global select, player
+    global select, player, click
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
+            click.play()
             game_framework.quit()
         elif event.type == SDL_KEYDOWN:
             if event.key == SDLK_ESCAPE:
+                click.play()
                 player.right_pressed = False
                 player.left_pressed = False
                 player.up_pressed = False
@@ -135,14 +140,19 @@ def handle_events():
                 game_framework.pop_mode()
             elif event.key == SDLK_1:
                 select = 1
+                click.play()
             elif event.key == SDLK_2:
                 select = 2
+                click.play()
             elif event.key == SDLK_3:
                 select = 3
+                click.play()
             elif event.key == SDLK_4:
                 select = 4
+                click.play()
         elif event.type == SDL_MOUSEBUTTONDOWN:
             global Now_slime
+            click.play()
             x, y = event.x, 768 - event.y
             if x > 1024 // 4 + (4 * 120) - 80 and x < 1024 // 4 + (4 * 120) + 5 and y > 768 // 3 - 30 and y < 768 // 3 + 30:
                 selected_slot = player.inventory[select - 1]

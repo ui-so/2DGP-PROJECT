@@ -2,7 +2,7 @@ import math
 import map_limit
 from operator import contains
 
-from pico2d import load_image, get_time, draw_rectangle
+from pico2d import load_image, get_time, draw_rectangle, load_wav
 from sdl2 import SDL_KEYDOWN, SDLK_SPACE, SDLK_d, SDL_KEYUP, SDLK_a, SDLK_w, SDLK_s, SDL_MOUSEBUTTONDOWN
 
 from state_machine import StateMachine
@@ -310,6 +310,9 @@ class Player:
         self.heal_hp_time = get_time()
         self.heal_mp_time = get_time()
 
+        self.click = load_wav('Button_sound.mp3')
+        self.click.set_volume(32)
+
         self.RUN = Run(self)
         self.IDLE = Idle(self)
         self.Hurt = Hurt(self)
@@ -360,10 +363,12 @@ class Player:
     def handle_event(self, event):
         e = ('INPUT', event)
         if mouse_left_down(e):
+            self.click.play()
             if self.mp >= 10:
                 self.mp -= 10
                 self.attack_()
         elif mouse_right_down(e):
+            self.click.play()
             self.catch_()
         self.state_machine.handle_state_event(('INPUT', event))
         pass
